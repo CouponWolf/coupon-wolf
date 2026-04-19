@@ -53,7 +53,7 @@ export default function Home() {
         <div className="light-panel" />
 
         <Image
-          src="/logo.png"
+          src="/Logo.png"
           alt="Logo"
           width={220}
           height={220}
