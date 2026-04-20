@@ -818,68 +818,51 @@ input, a {
 }
 
 /* ========================= */
-/* 🔥 MOBILE RESPONSIVE FIX */
+/* 🔥 MOBILE ONLY FIX (FINAL CLEAN VERSION) */
 /* ========================= */
 
 @media (max-width: 768px) {
 
-  /* ===== PANELS FIX ===== */
-  .dark-panel,
-  .light-panel {
-    width: 100%;
-    clip-path: none;
-    opacity: 0.25;
+  /* ===== TOP BUTTONS ===== */
+  .top-buttons {
+    right: 10px;
+    top: 10px;
+    gap: 8px;
+    align-items: center;
   }
 
-  /* ===== MAIN CONTAINER ===== */
-  .container {
-    overflow-x: hidden;
+  .top-buttons button {
+    height: 38px;
+    display: flex;
+    align-items: center;
   }
 
-  /* ===== HERO TEXT ===== */
+  /* ===== HERO ===== */
   .content {
     position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
+    margin-top: 120px;
     padding: 20px;
     text-align: center;
-    max-width: 100%;
+    left: auto;
+    top: auto;
+    transform: none;
   }
 
   .content h1 {
-    font-size: 28px;
-  }
-
-  /* ===== LOGO ===== */
-  .logo {
-    position: absolute;
-    width: 140px;
-    height: auto;
-  }
-
-  /* ===== TOP BUTTONS ===== */
-  .top-buttons {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    flex-direction: column;
-    gap: 8px;
-    transform: scale(0.9);
+    font-size: 26px;
   }
 
   /* ===== CENTER UI ===== */
   .center-ui {
     position: relative;
-    top: auto;
-    left: auto;
+    margin-top: 30px;
     transform: none;
-    margin-top: 40px;
+    left: auto;
+    bottom: auto;
   }
 
   .center-buttons {
     flex-direction: column;
-    width: 100%;
     align-items: center;
   }
 
@@ -887,44 +870,44 @@ input, a {
     width: 80%;
   }
 
-  /* ===== ROWS FIX ===== */
+  /* ===== BACKGROUND PANELS FIX */
+  .dark-panel,
+  .light-panel {
+    width: 100%;
+    clip-path: none;
+    opacity: 0.15;
+  }
+
+  /* ===== PAGE 2 FIX ===== */
   .rows-container {
     position: relative;
-    transform: none;
     padding: 20px;
+    gap: 20px;
+    transform: none;
+    top: auto;
+    bottom: auto;
   }
 
-  .row h2 {
-    font-size: 18px;
+  .row {
+    flex: none;
   }
 
-  /* ===== CAROUSEL FIX ===== */
+  /* ===== CARDS ===== */
   .card {
     width: 140px;
     min-width: 140px;
     height: 100px;
   }
 
-  /* ===== ABOUT PAGE FIX ===== */
+  /* ===== ABOUT PAGE ===== */
   .about-block {
     position: relative;
     top: auto;
     left: auto;
     padding: 20px;
-    max-width: 100%;
   }
 
   .about-text {
     font-size: 16px;
-  }
-
-  /* ===== SEARCH FIX ===== */
-  .search-container {
-    padding: 10px;
-  }
-
-  /* ===== SUBMIT PAGE FIX ===== */
-  .submit-box {
-    width: 90%;
   }
 }
