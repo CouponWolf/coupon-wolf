@@ -818,20 +818,22 @@ input, a {
 }
 
 /* ========================= */
-/* 🔥 FINAL MOBILE FIX CLEAN */
+/* 🔥 FINAL MOBILE FIX (REAL FINAL) */
 /* ========================= */
 @media (max-width: 768px) {
 
-  /* ===== STOP ANIMATION BREAKING HERO ===== */
+  /* ===== FIX ANIMATION CONFLICT (ROOT CAUSE) ===== */
   .content.animate {
-    transform: none !important;   /* 🔥 remove conflict */
+    opacity: 0;
+    transform: translateY(40px); /* ONLY vertical */
   }
 
   .content.animate.show {
-    transform: none !important;
+    opacity: 1;
+    transform: translateY(0); /* REMOVE horizontal shift bug */
   }
 
-  /* ===== PANELS OFF (no visual glitch) ===== */
+  /* ===== REMOVE DESKTOP PANELS ===== */
   .dark-panel,
   .light-panel {
     display: none;
@@ -845,7 +847,7 @@ input, a {
     left: 15px;
   }
 
-  /* ===== TOP BUTTONS ===== */
+  /* ===== TOP RIGHT BUTTONS ===== */
   .top-buttons {
     top: 15px;
     right: 15px;
@@ -863,11 +865,18 @@ input, a {
     padding: 7px;
   }
 
-  /* HERO FIX */
+  /* ===== HERO (REAL CENTER FIX) ===== */
   .content {
+    position: absolute;
+
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+
+    transform: translate(-50%, -50%); /* TRUE center */
+
     width: 90%;
+    max-width: 90%;
+
     text-align: center;
   }
 
@@ -876,15 +885,14 @@ input, a {
     line-height: 1.4;
   }
 
-  /* ===== FIX BUTTON AREA (KEEP IN PAGE 1) ===== */
+  /* ===== CENTER BUTTONS (KEEP IN PAGE 1) ===== */
   .center-ui {
     position: absolute;
 
-    top: 75%;
-    transform: translate(-50%, -50%);
-  
+    top: 78%; /* 🔥 key fix: no more spilling to page 2 */
+
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
 
     width: 100%;
     align-items: center;
@@ -901,11 +909,12 @@ input, a {
     width: 100%;
   }
 
-  /* ===== ARROWS FIX ===== */
+  /* ===== ARROWS (MAIN PAGE) ===== */
   .arrows {
     margin-top: 8px;
-    text-align: center;
     font-size: 24px;
+    text-align: center;
+    width: 100%;
   }
 
   /* ===== PAGE 2 FIX ===== */
@@ -918,24 +927,33 @@ input, a {
     gap: 25px;
   }
 
-  /* ===== ABOUT PAGE KEEP ORIGINAL STYLE ===== */
+  /* ===== ABOUT PAGE FIX ===== */
   .about-block {
-    top: 100px;        /* 🔥 keep your original feel */
-    left: 20px;
-    right: 20px;
+    position: absolute;
 
-    max-width: none;
-    width: auto;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 90%;
+    text-align: center;
   }
 
   .about-text {
     font-size: 20px;
   }
 
-  /* ===== PERFECT ARROW CENTER FIX ===== */
+  /* ===== PERFECT CENTER ARROWS (ABOUT PAGE) ===== */
   .about-page-arrows {
-  left: 50%;
-  transform: translate(-50%, 0);
-  width: 100%;
-  text-align: center;
+    position: absolute;
+
+    bottom: 40px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 100%;
+    text-align: center;
+  }
 }
