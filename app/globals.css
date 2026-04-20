@@ -818,109 +818,100 @@ input, a {
 }
 
 /* ========================= */
-/* 🔥 MOBILE ONLY (CLEAN FIX) */
+/* 🔥 FINAL MOBILE FIX CLEAN */
 /* ========================= */
-
 @media (max-width: 768px) {
 
-  /* ===== REMOVE PANELS ON MOBILE ===== */
+  /* REMOVE DESKTOP PANELS */
   .dark-panel,
   .light-panel {
     display: none;
   }
 
-  /* ===== LOGO ===== */
+  /* LOGO */
   .logo {
-    width: 110px !important;
+    width: 120px !important;
     height: auto !important;
-    top: 10px;
-    left: 10px;
+    top: 15px;
+    left: 15px;
   }
 
-  /* ===== TOP RIGHT BUTTONS ===== */
+  /* TOP RIGHT BUTTONS */
   .top-buttons {
-    position: absolute;
-    top: 20px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
 
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
+    flex-direction: column;   /* STACK */
+    align-items: flex-end;    /* RIGHT SIDE */
+    gap: 8px;
   }
 
   .top-buttons button {
     width: 120px;
-    height: 36px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
+    padding: 8px;
   }
 
-  /* ===== HERO (TRUE CENTER) ===== */
+  .user-pill {
+    width: 120px;
+    text-align: center;
+  }
+
+  /* ===== HERO FIX ===== */
   .content {
     position: absolute;
 
-    top: 45%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -60%); /* 🔥 centered properly */
 
     width: 90%;
+    max-width: 90%;
+
     text-align: center;
   }
 
   .content h1 {
     font-size: 24px;
+    line-height: 1.4;
   }
 
-  /* ===== CENTER UI (BOTTOM OF PAGE 1) ===== */
+  /* ===== CENTER BUTTONS ===== */
   .center-ui {
     position: absolute;
 
-    bottom: 40px;
+    bottom: 80px; /* 🔥 keeps them inside page 1 */
     left: 50%;
     transform: translateX(-50%);
 
-    display: flex;
-    flex-direction: column;
+    width: 100%;
     align-items: center;
   }
 
   .center-buttons {
-    display: flex;
     flex-direction: column;
-    align-items: center;   /* 🔥 FIX ABOUT BUTTON */
-    gap: 12px;
-    width: 100%;
-  }
-
-  .center-buttons a {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    width: 80%;
+    gap: 10px;
   }
 
   .center-buttons button {
-    width: 70%;
+    width: 100%;
   }
 
-  /* ===== ARROWS CENTER ===== */
+  /* 🔥 FIX ABOUT BUTTON ALIGN */
+  .center-buttons a {
+    width: 100%;
+  }
+
+  .center-buttons a button {
+    width: 100%;
+  }
+
+  /* ARROWS */
   .arrows {
-    margin-top: 20px;
+    margin-top: 10px;
     text-align: center;
-  }
-
-  .about-page-arrows {
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-  }
-
-  /* ===== PAGE HEIGHT SAFE ===== */
-  .page {
-    min-height: 100vh;
-    height: auto;
   }
 
   /* ===== PAGE 2 FIX ===== */
@@ -930,26 +921,31 @@ input, a {
     transform: none;
 
     padding: 20px;
-    gap: 20px;
+    gap: 25px;
   }
 
-  /* ===== CARDS ===== */
-  .card {
-    width: 140px;
-    min-width: 140px;
-    height: 100px;
-  }
+  /* ===== ABOUT PAGE ===== */
 
-  /* ===== ABOUT PAGE FIX ===== */
   .about-block {
-    position: relative;
-    top: auto;
-    left: auto;
-    padding: 20px;
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 90%;
     text-align: center;
   }
 
   .about-text {
     font-size: 18px;
   }
+
+  /* 🔥 PERFECT CENTER ARROWS */
+  .about-page-arrows {
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
 }
