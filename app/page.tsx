@@ -90,10 +90,12 @@ export default function Home() {
         </div>
 
         {/* HERO */}
-        <div className="content animate">
-          <h1>
-            Welcome to Coupon Wolf! Find the best coupons and deals here.
-          </h1>
+        <div className="content">
+          <div className="animate">
+            <h1>
+              Welcome to Coupon Wolf! Find the best coupons and deals here.
+            </h1>
+          </div>
         </div>
 
         {/* CENTER UI */}
