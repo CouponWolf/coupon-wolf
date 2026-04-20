@@ -957,3 +957,12 @@ input, a {
     text-align: center;
   }
 }
+
+.about-center {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

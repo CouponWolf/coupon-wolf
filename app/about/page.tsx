@@ -37,13 +37,15 @@ export default function AboutPage() {
         <div className="dark-panel" />
         <div className="light-panel" />
 
-        <div className="about-block about-animate">
-          <h1>About Coupon Wolve</h1>
+        <div className="about-center">
+          <div className="about-block about-animate">
+            <h1>About Coupon Wolve</h1>
 
-          <p className="about-text">
-            Coupon Wolve is built to help people find the best deals online —
-            quickly, transparently, and without hidden tricks.
-          </p>
+            <p className="about-text">
+              Coupon Wolve is built to help people find the best deals online —
+              quickly, transparently, and without hidden tricks.
+            </p>
+          </div>
         </div>
 
         <div className="about-page-arrows bounce">↓↓↓</div>
@@ -54,15 +56,17 @@ export default function AboutPage() {
         <div className="dark-panel" />
         <div className="light-panel" />
 
-        <div className="about-block about-animate">
-          <h1>How It Works</h1>
+        <div className="about-center">
+          <div className="about-block about-animate">
+            <h1>How It Works</h1>
 
-          <p className="about-text">
-            We collect and display the best available coupon codes from across
-            the internet. Our system highlights what’s new, what’s valuable,
-            and what people actually use — so you don’t waste time testing
-            dead or fake codes.
-          </p>
+            <p className="about-text">
+              We collect and display the best available coupon codes from across
+              the internet. Our system highlights what’s new, what’s valuable,
+              and what people actually use — so you don’t waste time testing
+              dead or fake codes.
+            </p>
+          </div>
         </div>
 
         <div className="about-page-arrows bounce">↓↓↓</div>
@@ -73,18 +77,20 @@ export default function AboutPage() {
         <div className="dark-panel" />
         <div className="light-panel" />
 
-        <div className="about-block about-animate">
-          <h1>Fair & Transparent</h1>
+        <div className="about-center">
+          <div className="about-block about-animate">
+            <h1>Fair & Transparent</h1>
 
-          <p className="about-text">
-            If you're already using someone else's affiliate link, we respect
-            that. We do NOT override or steal commissions.
-          </p>
+            <p className="about-text">
+              If you're already using someone else's affiliate link, we respect
+              that. We do NOT override or steal commissions.
+            </p>
 
-          <p className="about-text">
-            We also don’t make shady deals to hide better coupons. What you see
-            here is what actually works — no manipulation.
-          </p>
+            <p className="about-text">
+              We also don’t make shady deals to hide better coupons. What you see
+              here is what actually works — no manipulation.
+            </p>
+          </div>
         </div>
 
         <div className="about-page-arrows bounce">↓↓↓</div>
@@ -95,24 +101,26 @@ export default function AboutPage() {
         <div className="dark-panel" />
         <div className="light-panel" />
 
-        <div className="about-block about-animate">
-          <h1>Built With the Community</h1>
+        <div className="about-center">
+          <div className="about-block about-animate">
+            <h1>Built With the Community</h1>
 
-          <p className="about-text">
-            Coupon Wolve grows with its users. You can help others by sharing
-            working codes, reporting expired ones, and contributing to a
-            better experience for everyone.
-          </p>
+            <p className="about-text">
+              Coupon Wolve grows with its users. You can help others by sharing
+              working codes, reporting expired ones, and contributing to a
+              better experience for everyone.
+            </p>
 
-          <p className="about-text">
-            Together, we make sure no one overpays.
-          </p>
+            <p className="about-text">
+              Together, we make sure no one overpays.
+            </p>
 
-          <Link href="/">
-            <button className="btn-flat primary about-back">
-              ← Back to Home
-            </button>
-          </Link>
+            <Link href="/">
+              <button className="btn-flat primary about-back">
+                ← Back to Home
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
