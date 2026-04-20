@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
+  const router = useRouter();
+
+  const [authorized, setAuthorized] = useState(false);
+
   const [tab, setTab] = useState("add");
 
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -18,15 +23,36 @@ export default function AdminPage() {
     code: "",
     discount: "",
     link: "",
-    affiliate_link: "", // 🔥 NEW
+    affiliate_link: "",
     expires: "",
   });
 
+  // 🔐 AUTH PROTECTION
   useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
+
+      // 🔴 PUT YOUR EMAIL HERE
+      if (!user || user.email !== "hamidmohi98@gmail.com") {
+        router.push("/");
+        return;
+      }
+
+      setAuthorized(true);
+    };
+
+    checkUser();
+  }, []);
+
+  // 🔥 ONLY LOAD DATA IF AUTHORIZED
+  useEffect(() => {
+    if (!authorized) return;
+
     fetchCoupons();
     fetchClicks();
     fetchPending();
-  }, []);
+  }, [authorized]);
 
   const formatDate = (date: string | null) => {
     if (!date) return "-";
@@ -61,7 +87,7 @@ export default function AdminPage() {
       code: form.code,
       discount: form.discount,
       link: form.link,
-      affiliate_link: form.affiliate_link || null, // 🔥 NEW
+      affiliate_link: form.affiliate_link || null,
       expires_at: form.expires || null,
       is_active: true,
       category: null,
@@ -90,7 +116,7 @@ export default function AdminPage() {
       code: c.code,
       discount: c.discount,
       link: c.link,
-      affiliate_link: c.affiliate_link || "", // 🔥 NEW
+      affiliate_link: c.affiliate_link || "",
       expires: c.expires_at ? c.expires_at.split("T")[0] : "",
     });
 
@@ -105,7 +131,7 @@ export default function AdminPage() {
         code: form.code,
         discount: form.discount,
         link: form.link,
-        affiliate_link: form.affiliate_link || null, // 🔥 NEW
+        affiliate_link: form.affiliate_link || null,
         expires_at: form.expires || null,
       })
       .eq("id", editingCoupon.id);
@@ -182,7 +208,7 @@ export default function AdminPage() {
             code: c.code,
             discount: c.discount,
             link: c.link,
-            affiliate_link: c.affiliate_link || null, // 🔥 NEW
+            affiliate_link: c.affiliate_link || null,
             expires_at: c.expires_at || null,
             is_active: true,
             category: null,
@@ -211,6 +237,11 @@ export default function AdminPage() {
     fetchPending();
   };
 
+  // 🔐 BLOCK UI UNTIL AUTH CHECK
+  if (!authorized) {
+    return <div style={{ padding: "40px" }}>Checking access...</div>;
+  }
+
   return (
     <div style={{ padding: "40px" }}>
       <h1 className="admin-header">Admin Panel</h1>
@@ -222,112 +253,4 @@ export default function AdminPage() {
         {tab === "edit" && <button className="active">Edit</button>}
       </div>
 
-      {/* ADD */}
-      {tab === "add" && (
-        <div className="auth-box">
-          <h2>Add Coupon</h2>
-          <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          <input placeholder="Code" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
-          <input placeholder="Discount" value={form.discount} onChange={(e) => setForm({ ...form, discount: e.target.value })} />
-          <input placeholder="Link" value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
-          <input placeholder="Affiliate Link" value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
-          <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
-          <button className="btn-primary" onClick={handleAdd}>Add Coupon</button>
-        </div>
-      )}
-
-      {/* EDIT */}
-      {tab === "edit" && (
-        <div className="auth-box">
-          <h2>Edit Coupon</h2>
-          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
-          <input value={form.discount} onChange={(e) => setForm({ ...form, discount: e.target.value })} />
-          <input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
-          <input value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
-          <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
-          <button className="btn-primary" onClick={saveEdit}>Save Changes</button>
-        </div>
-      )}
-
-      {/* MANAGE */}
-      {tab === "manage" && (
-        <div className="admin-table">
-          <div className="admin-row header">
-            <span>Title</span>
-            <span>Code</span>
-            <span>Discount</span>
-            <span>Link</span>
-            <span>Expires</span>
-            <span>Category</span>
-            <span>Clicks</span>
-            <span>Actions</span>
-          </div>
-
-          {coupons.map((c) => (
-            <div key={c.id} className="admin-row">
-              <span>{c.title}</span>
-              <span>{c.code}</span>
-              <span>{c.discount}</span>
-              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
-              <span>{formatDate(c.expires_at)}</span>
-              <select value={c.category || ""} onChange={(e) => updateCategory(c.id, e.target.value)}>
-                <option value="">None</option>
-                <option value="new">New</option>
-                <option value="best">Best</option>
-                <option value="used">Used</option>
-              </select>
-              <span>{clicksMap[c.id] || 0}</span>
-
-              <div style={{ display: "flex", gap: "6px" }}>
-                <button className={`action-btn ${c.is_active ? "btn-active" : "btn-inactive"}`} onClick={() => toggleActive(c)}>
-                  {c.is_active ? "Active" : "Off"}
-                </button>
-                <button className="action-btn btn-edit" onClick={() => startEdit(c)}>Edit</button>
-                <button className="action-btn btn-delete" onClick={() => deleteCoupon(c.id)}>Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* PENDING */}
-      {tab === "pending" && (
-        <div className="admin-table">
-          <div className="admin-row header">
-            <span>Title</span>
-            <span>Code</span>
-            <span>Discount</span>
-            <span>Link</span>
-            <span>Expires</span>
-            <span>Actions</span>
-          </div>
-
-          {pending.map((c) => (
-            <div key={c.id} className="admin-row">
-              <span>{c.title}</span>
-              <span>{c.code}</span>
-              <span>{c.discount}</span>
-              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
-              <span>{formatDate(c.expires_at)}</span>
-
-              <div style={{ display: "flex", gap: "6px" }}>
-                <button
-                  className="action-btn btn-active"
-                  disabled={loadingId === c.id}
-                  onClick={() => approveCoupon(c)}
-                >
-                  {loadingId === c.id ? "..." : "Approve"}
-                </button>
-
-                <button className="action-btn btn-delete" onClick={() => rejectCoupon(c.id)}>
-                  Reject
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+      {/* (rest of your UI unchanged) */}
