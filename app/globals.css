@@ -818,12 +818,18 @@ input, a {
 }
 
 /* ========================= */
-/* 🔥 MOBILE ONLY (FINAL FIX) */
+/* 🔥 MOBILE ONLY (CLEAN FIX) */
 /* ========================= */
 
 @media (max-width: 768px) {
 
-  /* ===== LOGO (ONLY MOBILE) ===== */
+  /* ===== REMOVE PANELS ON MOBILE ===== */
+  .dark-panel,
+  .light-panel {
+    display: none;
+  }
+
+  /* ===== LOGO ===== */
   .logo {
     width: 110px !important;
     height: auto !important;
@@ -831,7 +837,7 @@ input, a {
     left: 10px;
   }
 
-  /* ===== TOP RIGHT BUTTONS (STACKED CLEAN) ===== */
+  /* ===== TOP RIGHT BUTTONS ===== */
   .top-buttons {
     position: absolute;
     top: 10px;
@@ -852,33 +858,29 @@ input, a {
     justify-content: center;
   }
 
-  /* ===== HERO FIX (NO HUGE SPACE) ===== */
+  /* ===== HERO (TRUE CENTER) ===== */
   .content {
-    position: relative;
+    position: absolute;
 
-    margin-top: 90px; /* 🔥 balanced under logo/buttons */
-    padding: 15px;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
+    width: 90%;
     text-align: center;
-
-    left: auto;
-    top: auto;
-    transform: none;
-    max-width: 100%;
   }
 
   .content h1 {
     font-size: 24px;
   }
 
-  /* ===== CENTER UI (STAYS IN PAGE 1) ===== */
+  /* ===== CENTER UI (BOTTOM OF PAGE 1) ===== */
   .center-ui {
-    position: relative;
+    position: absolute;
 
-    margin-top: 20px;
-
-    left: auto;
-    transform: none;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
 
     display: flex;
     flex-direction: column;
@@ -886,30 +888,44 @@ input, a {
   }
 
   .center-buttons {
+    display: flex;
     flex-direction: column;
+    align-items: center;   /* 🔥 FIX ABOUT BUTTON */
     gap: 12px;
     width: 100%;
-    align-items: center;
+  }
+
+  .center-buttons a {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .center-buttons button {
     width: 70%;
   }
 
+  /* ===== ARROWS CENTER ===== */
   .arrows {
     margin-top: 10px;
+    text-align: center;
   }
 
-  /* ===== PAGE HEIGHT FIX (STOP LEAKING) ===== */
+  .about-page-arrows {
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  /* ===== PAGE HEIGHT SAFE ===== */
   .page {
-    height: auto;
     min-height: 100vh;
+    height: auto;
   }
 
-  /* ===== PAGE 2 ROW FIX ===== */
+  /* ===== PAGE 2 FIX ===== */
   .rows-container {
     position: relative;
-
     top: auto;
     transform: none;
 
@@ -924,20 +940,13 @@ input, a {
     height: 100px;
   }
 
-  /* ===== BACKGROUND SAFE ===== */
-  .dark-panel,
-  .light-panel {
-    width: 100%;
-    clip-path: none;
-    opacity: 0.15;
-  }
-
   /* ===== ABOUT PAGE FIX ===== */
   .about-block {
     position: relative;
     top: auto;
     left: auto;
     padding: 20px;
+    text-align: center;
   }
 
   .about-text {
