@@ -25,9 +25,9 @@ export default function AdminPage() {
     expires: "",
   });
 
-  // 🔐 AUTH
+  // 🔐 PROTECTION (ONLY YOU)
   useEffect(() => {
-    const checkUser = async () => {
+    const check = async () => {
       const { data } = await supabase.auth.getUser();
       const user = data.user;
 
@@ -39,14 +39,14 @@ export default function AdminPage() {
       setAuthorized(true);
     };
 
-    checkUser();
+    check();
   }, []);
 
   useEffect(() => {
     if (!authorized) return;
     fetchCoupons();
-    fetchPending();
     fetchClicks();
+    fetchPending();
   }, [authorized]);
 
   const formatDate = (date: string | null) => {
@@ -75,6 +75,7 @@ export default function AdminPage() {
     setClicksMap(map);
   };
 
+  // ===== ADD =====
   const handleAdd = async () => {
     const { error } = await supabase.from("coupons").insert({
       title: form.title,
@@ -101,6 +102,7 @@ export default function AdminPage() {
     fetchCoupons();
   };
 
+  // ===== EDIT =====
   const startEdit = (c: any) => {
     setEditingCoupon(c);
 
@@ -146,6 +148,7 @@ export default function AdminPage() {
     fetchCoupons();
   };
 
+  // ===== TOGGLE =====
   const toggleActive = async (c: any) => {
     const { error } = await supabase
       .from("coupons")
@@ -157,6 +160,7 @@ export default function AdminPage() {
     fetchCoupons();
   };
 
+  // ===== DELETE =====
   const deleteCoupon = async (id: string) => {
     if (!confirm("Delete this coupon?")) return;
 
@@ -166,6 +170,7 @@ export default function AdminPage() {
     fetchClicks();
   };
 
+  // ===== CATEGORY =====
   const updateCategory = async (id: string, value: string) => {
     const categoryValue = value === "" ? null : value;
 
@@ -177,6 +182,7 @@ export default function AdminPage() {
     fetchCoupons();
   };
 
+  // ===== APPROVE =====
   const approveCoupon = async (c: any) => {
     if (loadingId) return;
     setLoadingId(c.id);
@@ -217,6 +223,7 @@ export default function AdminPage() {
     setLoadingId(null);
   };
 
+  // ===== REJECT =====
   const rejectCoupon = async (id: string) => {
     if (!confirm("Reject this submission?")) return;
 
@@ -283,22 +290,26 @@ export default function AdminPage() {
               <span>{c.title}</span>
               <span>{c.code}</span>
               <span>{c.discount}</span>
-              <a href={c.link} target="_blank">{c.link}</a>
+              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
               <span>{formatDate(c.expires_at)}</span>
+
               <select value={c.category || ""} onChange={(e) => updateCategory(c.id, e.target.value)}>
                 <option value="">None</option>
                 <option value="new">New</option>
                 <option value="best">Best</option>
                 <option value="used">Used</option>
               </select>
+
               <span>{clicksMap[c.id] || 0}</span>
 
-              <div>
-                <button onClick={() => toggleActive(c)}>
+              <div style={{ display: "flex", gap: "6px" }}>
+                <button className={`action-btn ${c.is_active ? "btn-active" : "btn-inactive"}`} onClick={() => toggleActive(c)}>
                   {c.is_active ? "Active" : "Off"}
                 </button>
-                <button onClick={() => startEdit(c)}>Edit</button>
-                <button onClick={() => deleteCoupon(c.id)}>Delete</button>
+
+                <button className="action-btn btn-edit" onClick={() => startEdit(c)}>Edit</button>
+
+                <button className="action-btn btn-delete" onClick={() => deleteCoupon(c.id)}>Delete</button>
               </div>
             </div>
           ))}
@@ -307,11 +318,38 @@ export default function AdminPage() {
 
       {tab === "pending" && (
         <div className="admin-table">
+          <div className="admin-row header">
+            <span>Title</span>
+            <span>Code</span>
+            <span>Discount</span>
+            <span>Link</span>
+            <span>Expires</span>
+            <span>Actions</span>
+          </div>
+
           {pending.map((c) => (
-            <div key={c.id}>
+            <div key={c.id} className="admin-row">
               <span>{c.title}</span>
-              <button onClick={() => approveCoupon(c)}>Approve</button>
-              <button onClick={() => rejectCoupon(c.id)}>Reject</button>
+              <span>{c.code}</span>
+              <span>{c.discount}</span>
+
+              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
+
+              <span>{formatDate(c.expires_at)}</span>
+
+              <div style={{ display: "flex", gap: "6px" }}>
+                <button
+                  className="action-btn btn-active"
+                  disabled={loadingId === c.id}
+                  onClick={() => approveCoupon(c)}
+                >
+                  {loadingId === c.id ? "..." : "Approve"}
+                </button>
+
+                <button className="action-btn btn-delete" onClick={() => rejectCoupon(c.id)}>
+                  Reject
+                </button>
+              </div>
             </div>
           ))}
         </div>
