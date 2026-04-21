@@ -1,22 +1,24 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const USER = "admin";
-const PASS = "coupon123"; // change this
-
 export function middleware(req: NextRequest) {
   const auth = req.headers.get("authorization");
 
+  // username & password
+  const USER = "admin";
+  const PASS = "coupon123";
+
   if (auth) {
     const base64 = auth.split(" ")[1];
-    const [user, pass] = atob(base64).split(":");
+    const decoded = atob(base64);
+    const [user, pass] = decoded.split(":");
 
     if (user === USER && pass === PASS) {
       return NextResponse.next();
     }
   }
 
-  return new NextResponse("Auth required", {
+  return new NextResponse("Protected", {
     status: 401,
     headers: {
       "WWW-Authenticate": 'Basic realm="Secure Area"',
@@ -25,5 +27,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/:path*",
+  matcher: ["/((?!_next|favicon.ico).*)"],
 };
