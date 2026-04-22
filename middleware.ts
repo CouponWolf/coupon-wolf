@@ -1,10 +1,22 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname;
+
+  // ✅ allow homepage for verification
+  if (path === "/") {
+    return NextResponse.next();
+  }
+
+  // ✅ allow static files
+  if (path.startsWith("/_next") || path === "/favicon.ico") {
+    return NextResponse.next();
+  }
+
+  // 🔒 protect everything else
   const auth = req.headers.get("authorization");
 
-  // username & password
   const USER = "admin";
   const PASS = "coupon123";
 
