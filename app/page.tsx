@@ -95,6 +95,11 @@ export default function Home() {
             <h1>
               Welcome to Coupon Wolf! Find the best coupons and deals here.
             </h1>
+
+            {/* ✅ IMPACT VERIFICATION */}
+            <p style={{ fontSize: "12px", opacity: 0.6 }}>
+              Impact-Site-Verification: 534f4d97-fb71-4b99-b767-2f87956bc7b9
+            </p>
           </div>
         </div>
 
