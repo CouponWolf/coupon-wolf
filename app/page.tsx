@@ -26,7 +26,7 @@ export default function Home() {
           if (entry.isIntersecting) {
             entry.target.classList.add("show");
           } else {
-            entry.target.classList.remove("show"); // replay
+            entry.target.classList.remove("show");
           }
         });
       },
@@ -96,7 +96,6 @@ export default function Home() {
               Welcome to Coupon Wolf! Find the best coupons and deals here.
             </h1>
 
-            {/* ✅ IMPACT VERIFICATION */}
             <p style={{ fontSize: "12px", opacity: 0.6 }}>
               Impact-Site-Verification: 534f4d97-fb71-4b99-b767-2f87956bc7b9
             </p>
@@ -138,17 +137,18 @@ export default function Home() {
 
       {/* ===== PAGE 3 ===== */}
       <section className="page">
-        <div className="dark-panel" />
-        <div className="light-panel" />
+
+        {/* 🔥 REMOVE PANELS FOR CLEAN FOOTER LOOK */}
+        <div style={{ position: "absolute", inset: 0, background: "#5A2A24", zIndex: 0 }} />
 
         <div className="content">
 
-          <h1 className="animate">Explore More Coupons</h1>
+          <h1 className="animate" style={{ color: "white" }}>
+            Explore More Coupons
+          </h1>
 
-          {/* 🔥 SEARCH */}
           <SearchCoupons />
 
-          {/* 🔥 SUBMIT BUTTON */}
           <div className="animate delay-1" style={{ marginTop: "30px" }}>
             <Link href="/submit">
               <button className="btn-flat primary">
@@ -158,6 +158,35 @@ export default function Home() {
           </div>
 
         </div>
+
+        {/* 🔥 NEW FOOTER SECTION */}
+        <div className="footer-section animate delay-2">
+
+          <div className="footer-columns">
+
+            <div>
+              <h3>Company</h3>
+              <Link href="/about">About</Link>
+              <Link href="/contact">Contact</Link>
+            </div>
+
+            <div>
+              <h3>Legal</h3>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Service</Link>
+            </div>
+
+            <div>
+              <h3>Product</h3>
+              <span>Coupons</span>
+              <span>Deals</span>
+              <span>Extension (Soon)</span>
+            </div>
+
+          </div>
+
+        </div>
+
       </section>
 
     </div>

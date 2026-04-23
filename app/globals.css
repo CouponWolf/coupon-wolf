@@ -939,3 +939,50 @@ input, a {
     color: #5A2A24;
   }
 }
+
+/* ===== FOOTER SECTION ===== */
+
+.footer-section {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  z-index: 20;
+}
+
+.footer-columns {
+  display: flex;
+  gap: 80px;
+  color: white;
+  text-align: left;
+}
+
+.footer-columns div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-columns h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.footer-columns a {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-columns a:hover {
+  color: white;
+}
+
+.footer-columns span {
+  font-size: 14px;
+  color: #bbb;
+}
