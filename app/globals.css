@@ -986,3 +986,61 @@ input, a {
   font-size: 14px;
   color: #bbb;
 }
+
+/* ===== PAGE 3 FIX ===== */
+
+.page3-content {
+  position: absolute;
+  top: 30%; /* 🔥 WAS 50% → NOW HIGHER */
+  left: 80px;
+  transform: translateY(-30%);
+  z-index: 30;
+  max-width: 600px;
+}
+
+/* ===== FOOTER FIX ===== */
+
+.footer-section {
+  position: absolute;
+  bottom: 0; /* 🔥 LOCK TO BOTTOM */
+  left: 0;
+  width: 100%;
+
+  height: 35%; /* 🔥 ONLY TAKE LOWER PART */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 20;
+
+  /* 🔥 DARK BACKGROUND LIKE EXAMPLE */
+  background: #111;
+}
+
+.footer-columns {
+  display: flex;
+  gap: 80px;
+  color: white;
+}
+
+.footer-columns div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-columns h3 {
+  font-size: 18px;
+}
+
+.footer-columns a,
+.footer-columns span {
+  color: #bbb;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.footer-columns a:hover {
+  color: white;
+}
