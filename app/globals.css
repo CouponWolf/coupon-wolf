@@ -1044,3 +1044,67 @@ input, a {
 .footer-columns a:hover {
   color: white;
 }
+
+/* ========================= */
+/* 🔥 CONTACT PAGE */
+/* ========================= */
+
+.contact-block {
+  position: absolute;
+  top: 120px;
+  left: 80px;
+  max-width: 600px;
+  z-index: 30;
+}
+
+.contact-block h1 {
+  font-size: 60px;
+  color: #5A2A24;
+}
+
+/* TEXT */
+.contact-text {
+  margin-top: 20px;
+  font-size: 22px;
+  color: #5A0F0F;
+  line-height: 1.7;
+}
+
+/* CONTACT INFO */
+.contact-info {
+  margin-top: 25px;
+  font-size: 20px;
+  color: #5A2A24;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.contact-info a {
+  color: #5A2A24;
+  text-decoration: underline;
+}
+
+/* NOTE */
+.contact-note {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #777;
+}
+
+/* BACK BUTTON */
+.contact-back {
+  margin-top: 30px;
+}
+
+/* 🔥 ANIMATION */
+.contact-animate {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.7s ease;
+}
+
+.contact-animate.show {
+  opacity: 1;
+  transform: translateY(0);
+}
