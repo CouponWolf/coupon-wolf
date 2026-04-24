@@ -736,6 +736,38 @@ input, a {
   display: none;
 }
 
+/* ===== SEARCH FULL WIDTH ROW ===== */
+
+.search-scroll {
+  position: relative;
+
+  width: 100vw;          /* 🔥 FULL SCREEN */
+  left: -80px;           /* 🔥 cancel content left offset */
+  padding-left: 80px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  margin-top: 20px;
+
+  scrollbar-width: none;
+}
+
+.search-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.search-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+}
+
+/* 🔥 PREVENT WRAPPING */
+.search-results {
+  display: none; /* kill old layout */
+}
+
 /* 🔥 SUBMIT PAGE FIX */
 .submit-box {
   position: relative; /* 🔥 change this */

@@ -11,7 +11,7 @@ export default function SearchCoupons() {
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -37,13 +37,10 @@ export default function SearchCoupons() {
   };
 
   // ===== HELPERS =====
+  const hasCode = (c: any) => c.code && c.code.trim() !== "";
 
-  const isNoCode = (coupon: any) => {
-    return !coupon.code || coupon.code.trim() === "";
-  };
-
-  const isPremium = (coupon: any) => {
-    const discount = coupon.discount?.toLowerCase() || "";
+  const isPremium = (c: any) => {
+    const discount = c.discount?.toLowerCase() || "";
 
     const percentMatch = discount.match(/(\d+)%/);
     if (percentMatch && parseInt(percentMatch[1]) > 15) return true;
@@ -54,6 +51,7 @@ export default function SearchCoupons() {
     return false;
   };
 
+  // ===== FAKE AD =====
   const watchAd = (id: string) => {
     if (adLoading) return;
 
@@ -65,25 +63,29 @@ export default function SearchCoupons() {
     }, 2000);
   };
 
-  const handleClick = async (coupon: any, e: any) => {
-    const noCode = isNoCode(coupon);
-    const premium = isPremium(coupon);
-    const isUnlocked = unlocked[coupon.id];
+  // ===== CLICK =====
+  const handleClick = async (c: any, e: any) => {
+    const noCode = !hasCode(c);
+    const premium = isPremium(c);
+    const isUnlocked = unlocked[c.id];
 
+    // 🔥 NO CODE → DIRECT OPEN
     if (noCode) {
-      window.open(coupon.link, "_blank");
+      window.open(c.link, "_blank");
       return;
     }
 
+    // 🔥 PREMIUM LOCK
     if (premium && !isUnlocked) {
-      watchAd(coupon.id);
+      watchAd(c.id);
       return;
     }
 
-    navigator.clipboard.writeText(coupon.code);
+    // 🔥 NORMAL COPY
+    navigator.clipboard.writeText(c.code);
 
     await supabase.from("clicks").insert([
-      { coupon_id: coupon.id }
+      { coupon_id: c.id }
     ]);
 
     setPopup({
@@ -94,7 +96,7 @@ export default function SearchCoupons() {
 
     setTimeout(() => {
       setPopup({ show: false, x: 0, y: 0 });
-      window.open(coupon.link, "_blank");
+      window.open(c.link, "_blank");
     }, 700);
   };
 
@@ -119,62 +121,67 @@ export default function SearchCoupons() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {/* 🔥 SCROLL CONTAINER */}
+      {/* 🔥 FULL WIDTH SCROLL ROW */}
       <div
-        className="search-results"
-        ref={containerRef}
+        className="search-scroll"
+        ref={scrollRef}
         onWheel={(e) => {
-          if (!containerRef.current) return;
+          if (!scrollRef.current) return;
 
-          const container = containerRef.current;
+          const container = scrollRef.current;
 
+          // 🔥 BLOCK VERTICAL SCROLL
           if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
             e.preventDefault();
+            e.stopPropagation();
             container.scrollLeft += e.deltaY;
           }
         }}
       >
-        {results.map((c) => {
-          const noCode = isNoCode(c);
-          const premium = isPremium(c);
-          const isUnlocked = unlocked[c.id];
+        <div className="search-track">
+          {results.map((c) => {
+            const noCode = !hasCode(c);
+            const premium = isPremium(c);
+            const isUnlocked = unlocked[c.id];
 
-          return (
-            <div
-              key={c.id}
-              className="card"
-              onClick={(e) => handleClick(c, e)}
-            >
-              <img
-                src={`/logos/${getDomainName(c.link)}.png`}
-                onError={(e: any) => {
-                  e.target.src = "/fallback.png";
-                }}
-              />
+            return (
+              <div
+                key={c.id}
+                className="card"
+                onClick={(e) => handleClick(c, e)}
+              >
+                <img
+                  src={`/logos/${getDomainName(c.link)}.png`}
+                  onError={(e: any) => {
+                    e.target.src = "/fallback.png";
+                  }}
+                />
 
-              <div className="card-info">
-                <span className="discount">{c.discount}</span>
-                <span className="title">{c.title}</span>
-              </div>
-
-              {!noCode && (
-                <div className="overlay">
-                  {premium ? (
-                    isUnlocked ? (
-                      <span>{c.code}</span>
-                    ) : adLoading === c.id ? (
-                      <span>Loading Ad...</span>
-                    ) : (
-                      <span>Watch Ad</span>
-                    )
-                  ) : (
-                    <span>{c.code}</span>
-                  )}
+                <div className="card-info">
+                  <span className="discount">{c.discount}</span>
+                  <span className="title">{c.title}</span>
                 </div>
-              )}
-            </div>
-          );
-        })}
+
+                {/* 🔥 OVERLAY LOGIC */}
+                {!noCode && (
+                  <div className="overlay">
+                    {premium ? (
+                      isUnlocked ? (
+                        <span>{c.code}</span>
+                      ) : adLoading === c.id ? (
+                        <span>Loading Ad...</span>
+                      ) : (
+                        <span>Watch Ad</span>
+                      )
+                    ) : (
+                      <span>{c.code}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {popup.show && (
