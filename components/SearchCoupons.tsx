@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -7,6 +7,10 @@ export default function SearchCoupons() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [popup, setPopup] = useState({ show: false, x: 0, y: 0 });
+
+  // 🔥 SAME SYSTEM AS ROW
+  const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
+  const [adLoading, setAdLoading] = useState<string | null>(null);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -31,7 +35,55 @@ export default function SearchCoupons() {
     if (data) setResults(data);
   };
 
+  // ===== 🔥 HELPERS =====
+
+  const isNoCode = (coupon: any) => {
+    return !coupon.code || coupon.code.trim() === "";
+  };
+
+  const isPremium = (coupon: any) => {
+    const discount = coupon.discount?.toLowerCase() || "";
+
+    const percentMatch = discount.match(/(\d+)%/);
+    if (percentMatch && parseInt(percentMatch[1]) > 15) return true;
+
+    const dollarMatch = discount.match(/\$(\d+)/);
+    if (dollarMatch && parseInt(dollarMatch[1]) > 10) return true;
+
+    return false;
+  };
+
+  // 🔥 FAKE AD
+  const watchAd = (id: string) => {
+    if (adLoading) return;
+
+    setAdLoading(id);
+
+    setTimeout(() => {
+      setUnlocked((prev) => ({ ...prev, [id]: true }));
+      setAdLoading(null);
+    }, 2000);
+  };
+
+  // ===== CLICK =====
   const handleClick = async (coupon: any, e: any) => {
+    const noCode = isNoCode(coupon);
+    const premium = isPremium(coupon);
+    const isUnlocked = unlocked[coupon.id];
+
+    // 🟢 NO CODE → DIRECT LINK
+    if (noCode) {
+      window.open(coupon.link, "_blank");
+      return;
+    }
+
+    // 🔴 PREMIUM LOCK
+    if (premium && !isUnlocked) {
+      watchAd(coupon.id);
+      return;
+    }
+
+    // 🟡 NORMAL / UNLOCKED
     navigator.clipboard.writeText(coupon.code);
 
     await supabase.from("clicks").insert([
@@ -72,29 +124,48 @@ export default function SearchCoupons() {
       />
 
       <div className="search-results">
-        {results.map((c) => (
-          <div
-            key={c.id}
-            className="card"
-            onClick={(e) => handleClick(c, e)}
-          >
-            <img
-              src={`/logos/${getDomainName(c.link)}.png`}
-              onError={(e: any) => {
-                e.target.src = "/fallback.png";
-              }}
-            />
+        {results.map((c) => {
+          const noCode = isNoCode(c);
+          const premium = isPremium(c);
+          const isUnlocked = unlocked[c.id];
 
-            <div className="card-info">
-              <span className="discount">{c.discount}</span>
-              <span className="title">{c.title}</span>
-            </div>
+          return (
+            <div
+              key={c.id}
+              className="card"
+              onClick={(e) => handleClick(c, e)}
+            >
+              <img
+                src={`/logos/${getDomainName(c.link)}.png`}
+                onError={(e: any) => {
+                  e.target.src = "/fallback.png";
+                }}
+              />
 
-            <div className="overlay">
-              <span>{c.code}</span>
+              <div className="card-info">
+                <span className="discount">{c.discount}</span>
+                <span className="title">{c.title}</span>
+              </div>
+
+              {/* 🔥 OVERLAY LOGIC */}
+              {!noCode && (
+                <div className="overlay">
+                  {premium ? (
+                    isUnlocked ? (
+                      <span>{c.code}</span>
+                    ) : adLoading === c.id ? (
+                      <span>Loading Ad...</span>
+                    ) : (
+                      <span>Watch Ad</span>
+                    )
+                  ) : (
+                    <span>{c.code}</span>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {popup.show && (
