@@ -1110,36 +1110,51 @@ input, a {
 }
 
 /* ========================= */
-/* 🔥 PRIVACY PAGE */
+/* 🔥 PRIVACY PAGE FIXED */
 /* ========================= */
 
-.privacy-block {
+.privacy-page {
+  overflow: hidden; /* prevent container scroll conflict */
+}
+
+/* 🔥 SCROLL AREA */
+.privacy-wrapper {
   position: absolute;
-  top: 120px;
-  left: 80px;
-  max-width: 650px;
+  top: 100px;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+
+  overflow-y: auto;
+  padding: 0 80px;
   z-index: 30;
 }
 
+/* CONTENT */
+.privacy-block {
+  max-width: 700px;
+}
+
+/* TITLE */
 .privacy-block h1 {
-  font-size: 60px;
+  font-size: 48px;
   color: #5A2A24;
 }
 
 /* TEXT */
 .privacy-text {
-  margin-top: 20px;
-  font-size: 20px;
+  margin-top: 18px;
+  font-size: 18px;
   color: #5A0F0F;
   line-height: 1.7;
 }
 
-/* BACK BUTTON */
+/* BUTTON */
 .privacy-back {
   margin-top: 30px;
 }
 
-/* 🔥 ANIMATION */
+/* ANIMATION */
 .privacy-animate {
   opacity: 0;
   transform: translateY(40px);
