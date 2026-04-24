@@ -722,7 +722,18 @@ input, a {
 .search-results {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+
+  padding-bottom: 10px;
+}
+
+.search-results::-webkit-scrollbar {
+  display: none;
 }
 
 /* 🔥 SUBMIT PAGE FIX */

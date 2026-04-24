@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function SearchCoupons() {
@@ -8,9 +8,10 @@ export default function SearchCoupons() {
   const [results, setResults] = useState<any[]>([]);
   const [popup, setPopup] = useState({ show: false, x: 0, y: 0 });
 
-  // 🔥 SAME SYSTEM AS ROW
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -35,7 +36,7 @@ export default function SearchCoupons() {
     if (data) setResults(data);
   };
 
-  // ===== 🔥 HELPERS =====
+  // ===== HELPERS =====
 
   const isNoCode = (coupon: any) => {
     return !coupon.code || coupon.code.trim() === "";
@@ -53,7 +54,6 @@ export default function SearchCoupons() {
     return false;
   };
 
-  // 🔥 FAKE AD
   const watchAd = (id: string) => {
     if (adLoading) return;
 
@@ -65,25 +65,21 @@ export default function SearchCoupons() {
     }, 2000);
   };
 
-  // ===== CLICK =====
   const handleClick = async (coupon: any, e: any) => {
     const noCode = isNoCode(coupon);
     const premium = isPremium(coupon);
     const isUnlocked = unlocked[coupon.id];
 
-    // 🟢 NO CODE → DIRECT LINK
     if (noCode) {
       window.open(coupon.link, "_blank");
       return;
     }
 
-    // 🔴 PREMIUM LOCK
     if (premium && !isUnlocked) {
       watchAd(coupon.id);
       return;
     }
 
-    // 🟡 NORMAL / UNLOCKED
     navigator.clipboard.writeText(coupon.code);
 
     await supabase.from("clicks").insert([
@@ -123,7 +119,21 @@ export default function SearchCoupons() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      <div className="search-results">
+      {/* 🔥 SCROLL CONTAINER */}
+      <div
+        className="search-results"
+        ref={containerRef}
+        onWheel={(e) => {
+          if (!containerRef.current) return;
+
+          const container = containerRef.current;
+
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            container.scrollLeft += e.deltaY;
+          }
+        }}
+      >
         {results.map((c) => {
           const noCode = isNoCode(c);
           const premium = isPremium(c);
@@ -147,7 +157,6 @@ export default function SearchCoupons() {
                 <span className="title">{c.title}</span>
               </div>
 
-              {/* 🔥 OVERLAY LOGIC */}
               {!noCode && (
                 <div className="overlay">
                   {premium ? (
