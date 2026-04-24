@@ -1108,3 +1108,45 @@ input, a {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ========================= */
+/* 🔥 PRIVACY PAGE */
+/* ========================= */
+
+.privacy-block {
+  position: absolute;
+  top: 120px;
+  left: 80px;
+  max-width: 650px;
+  z-index: 30;
+}
+
+.privacy-block h1 {
+  font-size: 60px;
+  color: #5A2A24;
+}
+
+/* TEXT */
+.privacy-text {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #5A0F0F;
+  line-height: 1.7;
+}
+
+/* BACK BUTTON */
+.privacy-back {
+  margin-top: 30px;
+}
+
+/* 🔥 ANIMATION */
+.privacy-animate {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.7s ease;
+}
+
+.privacy-animate.show {
+  opacity: 1;
+  transform: translateY(0);
+}
