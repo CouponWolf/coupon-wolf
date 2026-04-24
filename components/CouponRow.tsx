@@ -9,7 +9,6 @@ export default function CouponRow({ title, category }: any) {
 
   const [popup, setPopup] = useState({ show: false, x: 0, y: 0 });
 
-  // 🔥 NEW (ads system)
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
 
@@ -21,7 +20,6 @@ export default function CouponRow({ title, category }: any) {
     fetchAffiliateRules();
   }, []);
 
-  // ===== FETCH COUPONS =====
   const fetchCoupons = async () => {
     const now = new Date().toISOString();
 
@@ -34,7 +32,6 @@ export default function CouponRow({ title, category }: any) {
     if (data) setCoupons(data);
   };
 
-  // ===== FETCH AFFILIATE RULES =====
   const fetchAffiliateRules = async () => {
     const { data } = await supabase
       .from("affiliate_rules")
@@ -45,7 +42,24 @@ export default function CouponRow({ title, category }: any) {
 
   const loopedCoupons = [...coupons, ...coupons, ...coupons];
 
-  // ===== BUILD AFFILIATE =====
+  // ===== HELPERS =====
+
+  const hasCode = (c: any) => {
+    return c.code && c.code.trim() !== "";
+  };
+
+  const isFreeCoupon = (c: any) => {
+    const text = `${c.title} ${c.discount}`.toLowerCase();
+
+    const percentMatch = text.match(/(\d+)%/);
+    const dollarMatch = text.match(/\$(\d+)/);
+
+    const percent = percentMatch ? parseInt(percentMatch[1]) : 0;
+    const dollars = dollarMatch ? parseInt(dollarMatch[1]) : 0;
+
+    return percent <= 15 && dollars <= 10;
+  };
+
   const buildAffiliateLink = (url: string) => {
     try {
       const parsed = new URL(url);
@@ -67,59 +81,41 @@ export default function CouponRow({ title, category }: any) {
     }
   };
 
-  // ===== HOVER SCROLL =====
-  useEffect(() => {
-    const container = carouselRef.current;
-    const track = trackRef.current;
-    if (!container || !track) return;
-
-    const handleEnter = () => {
-      const style = window.getComputedStyle(track);
-      const matrix = new DOMMatrixReadOnly(style.transform);
-      const currentX = matrix.m41;
-
-      container.scrollLeft = -currentX;
-      track.style.animation = "none";
-    };
-
-    const handleLeave = () => {
-      track.style.animation = "scroll 20s linear infinite";
-    };
-
-    container.addEventListener("mouseenter", handleEnter);
-    container.addEventListener("mouseleave", handleLeave);
-
-    return () => {
-      container.removeEventListener("mouseenter", handleEnter);
-      container.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
-
-  // ===== 🔥 FAKE AD SYSTEM (replace later with real ads) =====
+  // ===== AD =====
   const watchAd = (couponId: string) => {
     if (adLoading) return;
 
     setAdLoading(couponId);
 
-    // simulate ad (2 seconds)
     setTimeout(() => {
       setUnlocked((prev) => ({
         ...prev,
         [couponId]: true,
       }));
-
       setAdLoading(null);
     }, 2000);
   };
 
   // ===== CLICK =====
   const handleClick = async (coupon: any, e: any) => {
-    // 🔥 block if not unlocked
-    if (!unlocked[coupon.id]) {
+    const noCode = !hasCode(coupon);
+
+    // 🔥 DEAL → DIRECT OPEN
+    if (noCode) {
+      const finalLink = buildAffiliateLink(coupon.link);
+      window.open(finalLink, "_blank");
+      return;
+    }
+
+    const free = isFreeCoupon(coupon);
+
+    // 🔥 PREMIUM → REQUIRE AD
+    if (!free && !unlocked[coupon.id]) {
       watchAd(coupon.id);
       return;
     }
 
+    // 🔥 COPY + OPEN
     navigator.clipboard.writeText(coupon.code);
 
     await supabase.from("clicks").insert([
@@ -156,23 +152,11 @@ export default function CouponRow({ title, category }: any) {
 
       <h2 className="animate">{title}</h2>
 
-      <div
-        className="carousel"
-        ref={carouselRef}
-        onWheel={(e) => {
-          if (!carouselRef.current) return;
-
-          const container = carouselRef.current;
-
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            e.preventDefault();
-            e.stopPropagation();
-            container.scrollLeft += e.deltaY;
-          }
-        }}
-      >
+      <div className="carousel" ref={carouselRef}>
         <div className="carousel-track" ref={trackRef}>
           {loopedCoupons.map((c, i) => {
+            const noCode = !hasCode(c);
+            const free = isFreeCoupon(c);
             const isUnlocked = unlocked[c.id];
 
             return (
@@ -194,16 +178,20 @@ export default function CouponRow({ title, category }: any) {
                   <span className="title">{c.title}</span>
                 </div>
 
-                {/* 🔥 LOCK / CODE */}
-                <div className="overlay">
-                  {isUnlocked ? (
-                    <span>{c.code}</span>
-                  ) : adLoading === c.id ? (
-                    <span>Loading Ad...</span>
-                  ) : (
-                    <span>Watch Ad</span>
-                  )}
-                </div>
+                {/* 🔥 OVERLAY LOGIC */}
+                {!noCode && (
+                  <div className="overlay">
+                    {free ? (
+                      <span>{c.code}</span>
+                    ) : isUnlocked ? (
+                      <span>{c.code}</span>
+                    ) : adLoading === c.id ? (
+                      <span>Loading Ad...</span>
+                    ) : (
+                      <span>Watch Ad</span>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
