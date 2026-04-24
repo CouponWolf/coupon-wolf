@@ -757,6 +757,10 @@ input, a {
   display: none;
 }
 
+.search-scroll {
+  overscroll-behavior: contain; /* 🔥 stops scroll chaining */
+}
+
 .search-track {
   display: flex;
   gap: 20px;

@@ -130,12 +130,12 @@ export default function SearchCoupons() {
 
           const container = scrollRef.current;
 
-          // 🔥 BLOCK VERTICAL SCROLL
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            e.preventDefault();
-            e.stopPropagation();
-            container.scrollLeft += e.deltaY;
-          }
+          // 🔥 ALWAYS BLOCK PAGE SCROLL FIRST
+          e.preventDefault();
+          e.stopPropagation();
+
+          // 🔥 FORCE HORIZONTAL SCROLL
+          container.scrollLeft += e.deltaY;
         }}
       >
         <div className="search-track">
