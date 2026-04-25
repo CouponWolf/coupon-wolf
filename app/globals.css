@@ -737,34 +737,36 @@ input, a {
 }
 
 /* ===== SEARCH FULL WIDTH ROW ===== */
+/* ===== SEARCH ROW (MATCH PAGE 2) ===== */
 
-.search-scroll {
+.search-row {
+  width: 100vw;
   position: relative;
-
-  width: 100vw;          /* 🔥 FULL SCREEN */
-  left: -80px;           /* 🔥 cancel content left offset */
+  left: -80px;
   padding-left: 80px;
 
-  overflow-x: auto;
-  overflow-y: hidden;
-
+  overflow: hidden; /* no scrollbar */
   margin-top: 20px;
-
-  scrollbar-width: none;
-}
-
-.search-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.search-scroll {
-  overscroll-behavior: contain; /* 🔥 stops scroll chaining */
 }
 
 .search-track {
   display: flex;
   gap: 20px;
   width: max-content;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+}
+
+.search-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* 🔥 PREVENT SCROLL LEAK */
+.search-track {
+  overscroll-behavior: contain;
 }
 
 /* 🔥 PREVENT WRAPPING */

@@ -11,7 +11,7 @@ export default function SearchCoupons() {
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
 
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -69,7 +69,7 @@ export default function SearchCoupons() {
     const premium = isPremium(c);
     const isUnlocked = unlocked[c.id];
 
-    // 🔥 NO CODE → DIRECT OPEN
+    // 🔥 NO CODE → DIRECT LINK
     if (noCode) {
       window.open(c.link, "_blank");
       return;
@@ -121,24 +121,25 @@ export default function SearchCoupons() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {/* 🔥 FULL WIDTH SCROLL ROW */}
-      <div
-        className="search-scroll"
-        ref={scrollRef}
-        onWheel={(e) => {
-          if (!scrollRef.current) return;
+      {/* 🔥 ROW LIKE PAGE 2 */}
+      <div className="search-row">
+        <div
+          className="search-track"
+          ref={trackRef}
+          onWheel={(e) => {
+            if (!trackRef.current) return;
 
-          const container = scrollRef.current;
+            // 🔥 ONLY WHEN HOVERING CARD
+            const isHoveringCard = (e.target as HTMLElement).closest(".card");
 
-          // 🔥 ALWAYS BLOCK PAGE SCROLL FIRST
-          e.preventDefault();
-          e.stopPropagation();
+            if (!isHoveringCard) return;
 
-          // 🔥 FORCE HORIZONTAL SCROLL
-          container.scrollLeft += e.deltaY;
-        }}
-      >
-        <div className="search-track">
+            e.preventDefault();
+            e.stopPropagation();
+
+            trackRef.current.scrollLeft += e.deltaY;
+          }}
+        >
           {results.map((c) => {
             const noCode = !hasCode(c);
             const premium = isPremium(c);
@@ -162,7 +163,7 @@ export default function SearchCoupons() {
                   <span className="title">{c.title}</span>
                 </div>
 
-                {/* 🔥 OVERLAY LOGIC */}
+                {/* 🔥 ONLY SHOW OVERLAY IF HAS CODE */}
                 {!noCode && (
                   <div className="overlay">
                     {premium ? (
