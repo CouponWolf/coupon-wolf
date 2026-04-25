@@ -703,14 +703,19 @@ input, a {
   transform: translateY(0);
 }
 
-/* 🔥 SEARCH SYSTEM */
+/* ========================= */
+/* 🔥 SEARCH SYSTEM (CLEAN) */
+/* ========================= */
+
 .search-container {
   margin-top: 20px;
-  max-width: 700px;
+  width: 100%;
 }
 
+/* INPUT */
 .search-input {
   width: 100%;
+  max-width: 700px;
   padding: 14px;
   border-radius: 10px;
   border: none;
@@ -719,36 +724,18 @@ input, a {
   outline: none;
 }
 
-.search-results {
-  display: flex;
-  gap: 20px;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-
-  padding-bottom: 10px;
-}
-
-.search-results::-webkit-scrollbar {
-  display: none;
-}
-
-/* ===== SEARCH FULL WIDTH ROW ===== */
-/* ===== SEARCH ROW (MATCH PAGE 2) ===== */
-
+/* 🔥 FULL WIDTH ROW (MATCH PAGE 2) */
 .search-row {
-  width: 100vw;
   position: relative;
-  left: -80px;
-  padding-left: 80px;
+  width: 100vw;
 
-  overflow: hidden; /* no scrollbar */
-  margin-top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  overflow: hidden;
 }
 
+/* 🔥 TRACK (SCROLL LIKE PAGE 2) */
 .search-track {
   display: flex;
   gap: 20px;
@@ -757,21 +744,20 @@ input, a {
   overflow-x: auto;
   overflow-y: hidden;
 
+  scroll-behavior: smooth;
   scrollbar-width: none;
+
+  padding-left: 80px;  /* match your layout */
 }
 
+/* hide scrollbar */
 .search-track::-webkit-scrollbar {
   display: none;
 }
 
-/* 🔥 PREVENT SCROLL LEAK */
+/* 🔥 STOP PAGE SNAP BREAK */
 .search-track {
-  overscroll-behavior: contain;
-}
-
-/* 🔥 PREVENT WRAPPING */
-.search-results {
-  display: none; /* kill old layout */
+  overscroll-behavior-x: contain;
 }
 
 /* 🔥 SUBMIT PAGE FIX */
