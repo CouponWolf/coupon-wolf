@@ -257,14 +257,20 @@ body {
 .overlay {
   position: absolute;
   inset: 0;
+
   background: rgba(90, 42, 36, 0.9);
   color: #fff;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   opacity: 0;
   transition: 0.3s;
-  transform: skewX(10deg);
+
+  /* 🔥 MATCH CARD SHAPE */
+  transform: skewX(-10deg);
+  border-radius: 12px;
 }
 
 .card:hover .overlay {
@@ -1258,19 +1264,34 @@ input, a {
   transform: translateY(0);
 }
 
-/* 🔥 PREMIUM GOLD EFFECT */
+/* 🔥 PREMIUM GOLD CARD */
 .premium-card {
-  border: 1px solid gold;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6),
-              0 0 20px rgba(255, 215, 0, 0.4);
-  animation: goldGlow 2s infinite alternate;
+  border: 2px solid #FFD700;
+  box-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.6),
+    0 0 20px rgba(255, 215, 0, 0.3),
+    0 5px 15px rgba(0,0,0,0.1);
 }
 
-@keyframes goldGlow {
-  from {
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+/* subtle gold glow animation */
+.premium-card {
+  animation: goldPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes goldPulse {
+  0% {
+    box-shadow: 
+      0 0 6px rgba(255, 215, 0, 0.4),
+      0 0 12px rgba(255, 215, 0, 0.2);
   }
-  to {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+  50% {
+    box-shadow: 
+      0 0 14px rgba(255, 215, 0, 0.9),
+      0 0 30px rgba(255, 215, 0, 0.5);
+  }
+  100% {
+    box-shadow: 
+      0 0 6px rgba(255, 215, 0, 0.4),
+      0 0 12px rgba(255, 215, 0, 0.2);
   }
 }
