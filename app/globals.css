@@ -239,6 +239,7 @@ body {
   padding: 10px;
   position: relative;
   cursor: pointer;
+  overflow: hidden;
 
   transform: skewX(-10deg);
   display: flex;
@@ -268,9 +269,11 @@ body {
   opacity: 0;
   transition: 0.3s;
 
-  /* 🔥 MATCH CARD SHAPE */
-  transform: skewX(-10deg);
-  border-radius: 12px;
+  /* ✅ REMOVE skew completely */
+  transform: none;
+
+  /* ✅ PERFECT SHAPE MATCH */
+  border-radius: inherit;
 }
 
 .card:hover .overlay {
