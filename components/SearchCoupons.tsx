@@ -19,6 +19,12 @@ export default function SearchCoupons() {
 
   useEffect(() => {
     fetchAffiliateRules();
+
+    // 🔥 LOAD FROM LOCAL STORAGE
+    const saved = localStorage.getItem("unlockedCoupons");
+    if (saved) {
+      setUnlocked(JSON.parse(saved));
+    }
   }, []);
 
   useEffect(() => {
@@ -95,7 +101,7 @@ export default function SearchCoupons() {
     return false;
   };
 
-  // ===== 🔥 HOVER SCROLL (COPY OF PAGE 2) =====
+  // ===== 🔥 HOVER SCROLL =====
   useEffect(() => {
     const container = carouselRef.current;
     const track = trackRef.current;
@@ -123,17 +129,22 @@ export default function SearchCoupons() {
     };
   }, []);
 
-  // ===== 🔥 FAKE AD =====
+  // ===== 🔥 FAKE AD + SAVE =====
   const watchAd = (couponId: string) => {
     if (adLoading) return;
 
     setAdLoading(couponId);
 
     setTimeout(() => {
-      setUnlocked((prev) => ({
-        ...prev,
+      const updated = {
+        ...unlocked,
         [couponId]: true,
-      }));
+      };
+
+      setUnlocked(updated);
+
+      // 🔥 SAVE TO LOCAL STORAGE
+      localStorage.setItem("unlockedCoupons", JSON.stringify(updated));
 
       setAdLoading(null);
     }, 2000);
@@ -219,7 +230,6 @@ export default function SearchCoupons() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {/* 🔥 EXACT SAME STRUCTURE AS PAGE 2 */}
       <div
         className="carousel"
         ref={carouselRef}
@@ -244,7 +254,9 @@ export default function SearchCoupons() {
             return (
               <div
                 key={i}
-                className="card"
+                className={`card ${
+                  has_coupon && !cheap ? "premium-card" : ""
+                }`}
                 onClick={(e) => handleClick(c, e)}
               >
                 <img
@@ -259,7 +271,6 @@ export default function SearchCoupons() {
                   <span className="title">{c.title}</span>
                 </div>
 
-                {/* ✅ ONLY SHOW OVERLAY IF HAS CODE */}
                 {has_coupon && (
                   <div className="overlay">
                     {cheap ? (
