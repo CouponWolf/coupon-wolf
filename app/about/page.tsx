@@ -47,8 +47,6 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-
-        <div className="about-page-arrows bounce">↓↓↓</div>
       </section>
 
       {/* ===== PAGE 2 ===== */}
@@ -68,8 +66,6 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-
-        <div className="about-page-arrows bounce">↓↓↓</div>
       </section>
 
       {/* ===== PAGE 3 ===== */}
@@ -92,8 +88,6 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-
-        <div className="about-page-arrows bounce">↓↓↓</div>
       </section>
 
       {/* ===== PAGE 4 ===== */}
