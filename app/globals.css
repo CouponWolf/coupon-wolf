@@ -1257,3 +1257,20 @@ input, a {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* 🔥 PREMIUM GOLD EFFECT */
+.premium-card {
+  border: 1px solid gold;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6),
+              0 0 20px rgba(255, 215, 0, 0.4);
+  animation: goldGlow 2s infinite alternate;
+}
+
+@keyframes goldGlow {
+  from {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+  }
+}

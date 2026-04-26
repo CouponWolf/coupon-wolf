@@ -19,6 +19,10 @@ export default function CouponRow({ title, category }: any) {
   useEffect(() => {
     fetchCoupons();
     fetchAffiliateRules();
+
+    // ✅ LOAD UNLOCKED FROM LOCALSTORAGE
+    const stored = JSON.parse(localStorage.getItem("unlockedCoupons") || "{}");
+    setUnlocked(stored);
   }, []);
 
   // ===== FETCH COUPONS =====
@@ -115,17 +119,22 @@ export default function CouponRow({ title, category }: any) {
     };
   }, []);
 
-  // ===== 🔥 FAKE AD =====
+  // ===== 🔥 FAKE AD (UPDATED WITH STORAGE) =====
   const watchAd = (couponId: string) => {
     if (adLoading) return;
 
     setAdLoading(couponId);
 
     setTimeout(() => {
-      setUnlocked((prev) => ({
-        ...prev,
+      const updated = {
+        ...unlocked,
         [couponId]: true,
-      }));
+      };
+
+      setUnlocked(updated);
+
+      // ✅ SAVE TO LOCALSTORAGE
+      localStorage.setItem("unlockedCoupons", JSON.stringify(updated));
 
       setAdLoading(null);
     }, 2000);
@@ -227,10 +236,12 @@ export default function CouponRow({ title, category }: any) {
             const cheap = isCheap(c);
             const isUnlocked = unlocked[c.id];
 
+            const isPremium = has_coupon && !cheap;
+
             return (
               <div
                 key={i}
-                className="card"
+                className={`card ${isPremium ? "premium-card" : ""}`}
                 onClick={(e) => handleClick(c, e)}
               >
                 <img
