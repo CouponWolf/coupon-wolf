@@ -1298,3 +1298,60 @@ input, a {
       0 0 12px rgba(255, 215, 0, 0.2);
   }
 }
+
+/* 🔥 CATEGORY ROW */
+.categories-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 10px 0;
+}
+
+/* 🔥 CATEGORY BUTTON */
+.category-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #ffffff;
+  color: #5A2A24;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+/* HOVER */
+.category-btn:hover {
+  background: #5A2A24;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+
+/* 🔥 CATEGORY ROW POSITIONING */
+.categories-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+/* 🔥 CATEGORY BUTTON STYLE (MATCH YOUR UI) */
+.category-btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #5A2A24;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+/* 🔥 HOVER (WHITE BG + RED TEXT) */
+.category-btn:hover {
+  background: white;
+  color: #5A2A24;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}

@@ -16,7 +16,7 @@ export default function Home() {
     });
   }, []);
 
-  // 🔥 SCROLL ANIMATION ENGINE
+  // 🔥 SCROLL ANIMATION ENGINE (RE-TRIGGERS)
   useEffect(() => {
     const elements = document.querySelectorAll(".animate");
 
@@ -60,14 +60,12 @@ export default function Home() {
           className="logo"
         />
 
-        {/* TOP RIGHT */}
         <div className="top-buttons">
           {user ? (
             <>
               <div className="user-pill">
                 {user.user_metadata?.name || "User"}
               </div>
-
               <button className="btn-flat" onClick={handleLogout}>
                 Log Out
               </button>
@@ -75,21 +73,15 @@ export default function Home() {
           ) : (
             <>
               <Link href="/signup">
-                <button className="btn-flat primary">
-                  Sign Up
-                </button>
+                <button className="btn-flat primary">Sign Up</button>
               </Link>
-
               <Link href="/login">
-                <button className="btn-flat">
-                  Log In
-                </button>
+                <button className="btn-flat">Log In</button>
               </Link>
             </>
           )}
         </div>
 
-        {/* HERO */}
         <div className="content">
           <div className="animate">
             <h1>
@@ -98,25 +90,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* CENTER UI */}
         <div className="center-ui">
           <div className="center-buttons animate delay-1">
             <Link href="/about">
-              <button className="btn-flat primary">
-                About Us
-              </button>
+              <button className="btn-flat primary">About Us</button>
             </Link>
-
-            <button className="btn-flat">
-              Add Extension
-            </button>
+            <button className="btn-flat">Add Extension</button>
           </div>
 
-          <div className="arrows bounce animate delay-2">
-            ↓↓↓
-          </div>
+          <div className="arrows bounce animate delay-2">↓↓↓</div>
         </div>
-
       </section>
 
       {/* ===== PAGE 2 ===== */}
@@ -131,56 +114,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== PAGE 3 (WITH CATEGORIES) ===== */}
+      {/* ===== PAGE 3 ===== */}
       <section className="page">
         <div className="dark-panel" />
         <div className="light-panel" />
 
         <div className="page3-content">
 
-          <h1 className="animate">Explore More Coupons</h1>
-
-          {/* 🔥 CATEGORY BUTTONS */}
-          <div className="categories-row animate delay-1">
-
-            <Link href="/category/clothing">
-              <button className="category-btn">Clothing</button>
-            </Link>
-
-            <Link href="/category/gaming">
-              <button className="category-btn">Gaming</button>
-            </Link>
-
-            <Link href="/category/tech">
-              <button className="category-btn">Tech</button>
-            </Link>
-
-            <Link href="/category/shoes">
-              <button className="category-btn">Shoes</button>
-            </Link>
-
-            <Link href="/category/beauty">
-              <button className="category-btn">Beauty</button>
-            </Link>
-
-            <Link href="/category/home">
-              <button className="category-btn">Home</button>
-            </Link>
-
-            <Link href="/category/fitness">
-              <button className="category-btn">Fitness</button>
-            </Link>
-
-            <Link href="/category/travel">
-              <button className="category-btn">Travel</button>
-            </Link>
-
+          {/* 🔥 CATEGORIES (NOW ABOVE TITLE) */}
+          <div className="categories-row animate">
+            <Link href="/category/clothing"><button className="category-btn">Clothing</button></Link>
+            <Link href="/category/gaming"><button className="category-btn">Gaming</button></Link>
+            <Link href="/category/tech"><button className="category-btn">Tech</button></Link>
+            <Link href="/category/shoes"><button className="category-btn">Shoes</button></Link>
+            <Link href="/category/beauty"><button className="category-btn">Beauty</button></Link>
+            <Link href="/category/home"><button className="category-btn">Home</button></Link>
+            <Link href="/category/fitness"><button className="category-btn">Fitness</button></Link>
+            <Link href="/category/travel"><button className="category-btn">Travel</button></Link>
           </div>
 
-          {/* 🔥 SEARCH */}
+          <h1 className="animate delay-1">Explore More Coupons</h1>
+
           <SearchCoupons />
 
-          {/* 🔥 ADD BUTTON */}
           <div className="animate delay-2" style={{ marginTop: "25px" }}>
             <Link href="/submit">
               <button className="btn-flat primary">
@@ -191,10 +147,9 @@ export default function Home() {
 
         </div>
 
-        {/* 🔥 FOOTER */}
+        {/* FOOTER */}
         <div className="footer-section">
           <div className="footer-columns">
-
             <div>
               <h3>Company</h3>
               <Link href="/contact">Contact</Link>
@@ -213,7 +168,6 @@ export default function Home() {
               <span>Ad Disclosure</span>
               <span>Fair Use</span>
             </div>
-
           </div>
         </div>
 
