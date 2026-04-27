@@ -1369,3 +1369,56 @@ input, a {
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
+
+/* PAGE 3 MUST BE RELATIVE */
+.page3 {
+  position: relative;
+}
+
+/* 🔥 FLOATING CATEGORY BAR (TOP EMPTY SPACE) */
+.categories-floating {
+  position: absolute;
+  top: 40px; /* adjust if needed */
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+
+  z-index: 5;
+}
+
+/* BUTTON STYLE */
+.category-btn {
+  background: #5a2a24;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+/* 🔥 HOVER EFFECT */
+.category-btn:hover {
+  background: white;
+  color: #5a2a24;
+}
+
+/* 🔥 SCROLL ANIMATION (same system) */
+.categories-floating {
+  opacity: 0;
+  transform: translate(-50%, 20px);
+  transition: 0.6s;
+}
+
+.categories-floating.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

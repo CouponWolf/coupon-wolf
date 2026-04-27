@@ -16,7 +16,7 @@ export default function Home() {
     });
   }, []);
 
-  // 🔥 SCROLL ANIMATION ENGINE (RE-TRIGGERS)
+  // 🔥 SCROLL ANIMATION
   useEffect(() => {
     const elements = document.querySelectorAll(".animate");
 
@@ -48,7 +48,6 @@ export default function Home() {
 
       {/* ===== PAGE 1 ===== */}
       <section className="page">
-
         <div className="dark-panel" />
         <div className="light-panel" />
 
@@ -66,6 +65,7 @@ export default function Home() {
               <div className="user-pill">
                 {user.user_metadata?.name || "User"}
               </div>
+
               <button className="btn-flat" onClick={handleLogout}>
                 Log Out
               </button>
@@ -75,6 +75,7 @@ export default function Home() {
               <Link href="/signup">
                 <button className="btn-flat primary">Sign Up</button>
               </Link>
+
               <Link href="/login">
                 <button className="btn-flat">Log In</button>
               </Link>
@@ -95,10 +96,13 @@ export default function Home() {
             <Link href="/about">
               <button className="btn-flat primary">About Us</button>
             </Link>
+
             <button className="btn-flat">Add Extension</button>
           </div>
 
-          <div className="arrows bounce animate delay-2">↓↓↓</div>
+          <div className="arrows bounce animate delay-2">
+            ↓↓↓
+          </div>
         </div>
       </section>
 
@@ -115,45 +119,39 @@ export default function Home() {
       </section>
 
       {/* ===== PAGE 3 ===== */}
-      <section className="page">
+      <section className="page page3">
+
         <div className="dark-panel" />
         <div className="light-panel" />
 
+        {/* 🔥 TOP FLOATING CATEGORY BAR (DOES NOT PUSH CONTENT) */}
+        <div className="categories-floating animate">
+          {["Clothing","Gaming","Tech","Shoes","Beauty","Home","Fitness","Travel"].map((cat) => (
+            <button key={cat} className="category-btn">
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* 🔥 NORMAL CONTENT (UNCHANGED POSITION) */}
         <div className="page3-content">
-
-          {/* 🔥 FLOATING CATEGORIES (NO LAYOUT IMPACT) */}
-          <div className="categories-floating animate">
-
-            <div className="categories-scroll">
-
-              <Link href="/category/clothing"><button className="category-btn">Clothing</button></Link>
-              <Link href="/category/gaming"><button className="category-btn">Gaming</button></Link>
-              <Link href="/category/tech"><button className="category-btn">Tech</button></Link>
-              <Link href="/category/shoes"><button className="category-btn">Shoes</button></Link>
-              <Link href="/category/beauty"><button className="category-btn">Beauty</button></Link>
-              <Link href="/category/home"><button className="category-btn">Home</button></Link>
-              <Link href="/category/fitness"><button className="category-btn">Fitness</button></Link>
-              <Link href="/category/travel"><button className="category-btn">Travel</button></Link>
-            </div>
-          </div>
-
-          <h1 className="animate delay-1">Explore More Coupons</h1>
+          <h1 className="animate">Explore More Coupons</h1>
 
           <SearchCoupons />
 
-          <div className="animate delay-2" style={{ marginTop: "25px" }}>
+          <div className="animate delay-1" style={{ marginTop: "25px" }}>
             <Link href="/submit">
               <button className="btn-flat primary">
                 + Add Your Coupon
               </button>
             </Link>
           </div>
-
         </div>
 
         {/* FOOTER */}
         <div className="footer-section">
           <div className="footer-columns">
+
             <div>
               <h3>Company</h3>
               <Link href="/contact">Contact</Link>
@@ -172,6 +170,7 @@ export default function Home() {
               <span>Ad Disclosure</span>
               <span>Fair Use</span>
             </div>
+
           </div>
         </div>
 
