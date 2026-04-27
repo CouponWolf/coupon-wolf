@@ -131,19 +131,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== PAGE 3 (FIXED) ===== */}
+      {/* ===== PAGE 3 (WITH CATEGORIES) ===== */}
       <section className="page">
         <div className="dark-panel" />
         <div className="light-panel" />
 
-        {/* 🔥 CONTENT (MOVED UP) */}
         <div className="page3-content">
 
           <h1 className="animate">Explore More Coupons</h1>
 
+          {/* 🔥 CATEGORY BUTTONS */}
+          <div className="categories-row animate delay-1">
+
+            <Link href="/category/clothing">
+              <button className="category-btn">Clothing</button>
+            </Link>
+
+            <Link href="/category/gaming">
+              <button className="category-btn">Gaming</button>
+            </Link>
+
+            <Link href="/category/tech">
+              <button className="category-btn">Tech</button>
+            </Link>
+
+            <Link href="/category/shoes">
+              <button className="category-btn">Shoes</button>
+            </Link>
+
+            <Link href="/category/beauty">
+              <button className="category-btn">Beauty</button>
+            </Link>
+
+            <Link href="/category/home">
+              <button className="category-btn">Home</button>
+            </Link>
+
+            <Link href="/category/fitness">
+              <button className="category-btn">Fitness</button>
+            </Link>
+
+            <Link href="/category/travel">
+              <button className="category-btn">Travel</button>
+            </Link>
+
+          </div>
+
+          {/* 🔥 SEARCH */}
           <SearchCoupons />
 
-          <div className="animate delay-1" style={{ marginTop: "25px" }}>
+          {/* 🔥 ADD BUTTON */}
+          <div className="animate delay-2" style={{ marginTop: "25px" }}>
             <Link href="/submit">
               <button className="btn-flat primary">
                 + Add Your Coupon
@@ -153,9 +191,8 @@ export default function Home() {
 
         </div>
 
-        {/* 🔥 FOOTER (BOTTOM ONLY) */}
+        {/* 🔥 FOOTER */}
         <div className="footer-section">
-
           <div className="footer-columns">
 
             <div>
@@ -178,7 +215,6 @@ export default function Home() {
             </div>
 
           </div>
-
         </div>
 
       </section>
