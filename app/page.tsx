@@ -121,16 +121,20 @@ export default function Home() {
 
         <div className="page3-content">
 
-          {/* 🔥 CATEGORIES (NOW ABOVE TITLE) */}
-          <div className="categories-row animate">
-            <Link href="/category/clothing"><button className="category-btn">Clothing</button></Link>
-            <Link href="/category/gaming"><button className="category-btn">Gaming</button></Link>
-            <Link href="/category/tech"><button className="category-btn">Tech</button></Link>
-            <Link href="/category/shoes"><button className="category-btn">Shoes</button></Link>
-            <Link href="/category/beauty"><button className="category-btn">Beauty</button></Link>
-            <Link href="/category/home"><button className="category-btn">Home</button></Link>
-            <Link href="/category/fitness"><button className="category-btn">Fitness</button></Link>
-            <Link href="/category/travel"><button className="category-btn">Travel</button></Link>
+          {/* 🔥 FLOATING CATEGORIES (NO LAYOUT IMPACT) */}
+          <div className="categories-floating animate">
+
+            <div className="categories-scroll">
+
+              <Link href="/category/clothing"><button className="category-btn">Clothing</button></Link>
+              <Link href="/category/gaming"><button className="category-btn">Gaming</button></Link>
+              <Link href="/category/tech"><button className="category-btn">Tech</button></Link>
+              <Link href="/category/shoes"><button className="category-btn">Shoes</button></Link>
+              <Link href="/category/beauty"><button className="category-btn">Beauty</button></Link>
+              <Link href="/category/home"><button className="category-btn">Home</button></Link>
+              <Link href="/category/fitness"><button className="category-btn">Fitness</button></Link>
+              <Link href="/category/travel"><button className="category-btn">Travel</button></Link>
+            </div>
           </div>
 
           <h1 className="animate delay-1">Explore More Coupons</h1>
