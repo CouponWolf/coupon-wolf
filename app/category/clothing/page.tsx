@@ -3,122 +3,100 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-const BRANDS = ["Nike", "Adidas", "ASOS", "Zara", "H&M", "Shein"];
+const STORES = ["Nike", "Adidas", "ASOS", "Shein", "Zara"];
 
 export default function ClothingPage() {
-  const [activeBrand, setActiveBrand] = useState("Nike");
+  const [activeStore, setActiveStore] = useState("Nike");
   const [coupons, setCoupons] = useState<any[]>([]);
-  const [flipping, setFlipping] = useState(false);
+  const [flip, setFlip] = useState(false);
 
   useEffect(() => {
-    fetchCoupons();
-  }, [activeBrand]);
+    fetchCoupons(activeStore);
 
-  const fetchCoupons = async () => {
+    // 🔥 trigger flip animation
+    setFlip(true);
+    setTimeout(() => setFlip(false), 500);
+  }, [activeStore]);
+
+  const fetchCoupons = async (store: string) => {
     const { data } = await supabase
       .from("coupons")
       .select("*")
-      .ilike("link", `%${activeBrand.toLowerCase()}%`)
+      .ilike("link", `%${store.toLowerCase()}%`)
       .eq("is_active", true);
 
     if (data) setCoupons(data);
   };
 
-  // 🔥 MODEL IMAGE LOGIC
+  // ===== 🧠 SMART IMAGE LOGIC =====
   const getModelImage = () => {
-    const name = activeBrand;
+    const capital = activeStore.charAt(0).toUpperCase() + activeStore.slice(1);
 
-    if (name === "Nike" || name === "Adidas" || name === "ASOS") {
-      return `/models/${name}_model.png`;
-    }
+    // try specific model first
+    const specific = `/models/${capital}_model.png`;
 
-    const random = Math.floor(Math.random() * 3) + 1;
-    return `/models/model_${random}.png`;
-  };
+    // fallback random
+    const fallbackImages = ["/models/model_1.png", "/models/model_2.png", "/models/model_3.png"];
+    const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
 
-  const handleTabClick = (brand: string) => {
-    if (brand === activeBrand) return;
-
-    setFlipping(true);
-
-    setTimeout(() => {
-      setActiveBrand(brand);
-      setFlipping(false);
-    }, 250);
+    return specific + "?v=" + new Date().getTime(); // force refresh
   };
 
   return (
     <div className="clothing-page">
 
-      {/* 🔥 TOP RIGHT ICONS */}
-      <img src="/categories/clothing.png" className="clothing-icon" />
+      {/* ===== TOP RIGHT VISUAL ===== */}
       <img src="/panels/corner_shape.png" className="corner-shape" />
+      <img src="/categories/clothing.png" className="category-icon" />
 
-      {/* 🔥 LEFT TABS */}
-      <div className="brand-tabs">
-        {BRANDS.map((b) => (
-          <div
-            key={b}
-            className={`brand-tab ${activeBrand === b ? "active" : ""}`}
-            onClick={() => handleTabClick(b)}
-          >
-            {b}
-          </div>
-        ))}
-      </div>
+      {/* ===== TITLE ===== */}
+      <h1 className="clothing-title">CLOTHING</h1>
 
-      {/* 🔥 MAIN CONTENT */}
-      <div className="clothing-content">
+      {/* ===== MAIN CONTAINER ===== */}
+      <div className="clothing-container">
 
-        {/* LEFT → DEALS */}
-        <div className="deals-container">
-          <h1 className="clothing-title">CLOTHING</h1>
-
-          <div className="deals-scroll">
-            {coupons.map((c, i) => {
-              const premium = !(
-                (c.discount || "").includes("10") ||
-                (c.discount || "").includes("15")
-              );
-
-              return (
-                <div
-                  key={i}
-                  className={`deal-card ${premium ? "premium" : ""}`}
-                >
-                  <div className="deal-left">
-                    <img
-                      src={`/logos/${new URL(c.link).hostname
-                        .replace("www.", "")
-                        .split(".")[0]}.png`}
-                    />
-                  </div>
-
-                  <div className="deal-mid">
-                    <div className="deal-discount">{c.discount}</div>
-                    <div className="deal-title">{c.title}</div>
-                  </div>
-
-                  <div className="deal-right">
-                    <button
-                      onClick={() => window.open(c.link, "_blank")}
-                    >
-                      View Deal
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        {/* ===== LEFT TABS ===== */}
+        <div className="store-tabs">
+          {STORES.map((store) => (
+            <button
+              key={store}
+              className={`store-btn ${activeStore === store ? "active" : ""}`}
+              onClick={() => setActiveStore(store)}
+            >
+              {store}
+            </button>
+          ))}
         </div>
 
-        {/* RIGHT → MODEL */}
-        <div className="model-container">
-          <div className={`model-frame ${flipping ? "flip" : ""}`}>
+        {/* ===== CONTENT ===== */}
+        <div className="clothing-content">
+
+          {/* ===== COUPONS SCROLL ===== */}
+          <div className="coupons-scroll">
+            {coupons.map((c, i) => (
+              <div key={i} className="coupon-card">
+                <div>
+                  <h3>{c.title}</h3>
+                  <p className="discount">{c.discount}</p>
+                  <span className="code">{c.code}</span>
+                </div>
+
+                <button
+                  className="go-btn"
+                  onClick={() => window.open(c.link, "_blank")}
+                >
+                  Get Deal
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* ===== MODEL SIDE ===== */}
+          <div className={`model-box ${flip ? "flip" : ""}`}>
             <img src={getModelImage()} />
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );
