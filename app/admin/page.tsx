@@ -23,7 +23,7 @@ export default function AdminPage() {
     link: "",
     affiliate_link: "",
     expires: "",
-    page: "", // 🔥 NEW
+    page: "", // 🔥 NEW ONLY
   });
 
   // 🔐 PROTECTION
@@ -92,11 +92,6 @@ export default function AdminPage() {
 
     if (error) return alert(error.message);
 
-    resetForm();
-    fetchCoupons();
-  };
-
-  const resetForm = () => {
     setForm({
       title: "",
       code: "",
@@ -106,6 +101,8 @@ export default function AdminPage() {
       expires: "",
       page: "",
     });
+
+    fetchCoupons();
   };
 
   // ===== EDIT =====
@@ -119,7 +116,7 @@ export default function AdminPage() {
       link: c.link,
       affiliate_link: c.affiliate_link || "",
       expires: c.expires_at ? c.expires_at.split("T")[0] : "",
-      page: c.page || "", // 🔥
+      page: c.page || "", // 🔥 NEW
     });
 
     setTab("edit");
@@ -135,7 +132,7 @@ export default function AdminPage() {
         link: form.link,
         affiliate_link: form.affiliate_link || null,
         expires_at: form.expires || null,
-        page: form.page || null, // 🔥
+        page: form.page || null, // 🔥 NEW
       })
       .eq("id", editingCoupon.id);
 
@@ -143,36 +140,28 @@ export default function AdminPage() {
 
     setEditingCoupon(null);
     setTab("manage");
-    resetForm();
-    fetchCoupons();
-  };
 
-  // ===== CATEGORY =====
-  const updateCategory = async (id: string, value: string) => {
-    await supabase
-      .from("coupons")
-      .update({ category: value || null })
-      .eq("id", id);
-
-    fetchCoupons();
-  };
-
-  // ===== PAGE (NEW) =====
-  const updatePage = async (id: string, value: string) => {
-    await supabase
-      .from("coupons")
-      .update({ page: value || null })
-      .eq("id", id);
+    setForm({
+      title: "",
+      code: "",
+      discount: "",
+      link: "",
+      affiliate_link: "",
+      expires: "",
+      page: "",
+    });
 
     fetchCoupons();
   };
 
   // ===== TOGGLE =====
   const toggleActive = async (c: any) => {
-    await supabase
+    const { error } = await supabase
       .from("coupons")
       .update({ is_active: !c.is_active })
       .eq("id", c.id);
+
+    if (error) return alert("Toggle failed");
 
     fetchCoupons();
   };
@@ -187,27 +176,78 @@ export default function AdminPage() {
     fetchClicks();
   };
 
+  // ===== CATEGORY =====
+  const updateCategory = async (id: string, value: string) => {
+    const categoryValue = value === "" ? null : value;
+
+    await supabase
+      .from("coupons")
+      .update({ category: categoryValue })
+      .eq("id", id);
+
+    fetchCoupons();
+  };
+
+  // ===== 🔥 PAGE UPDATE (NEW ONLY) =====
+  const updatePage = async (id: string, value: string) => {
+    const pageValue = value === "" ? null : value;
+
+    await supabase
+      .from("coupons")
+      .update({ page: pageValue })
+      .eq("id", id);
+
+    fetchCoupons();
+  };
+
   // ===== APPROVE =====
   const approveCoupon = async (c: any) => {
     if (loadingId) return;
     setLoadingId(c.id);
 
     try {
-      await supabase.from("coupons").insert({
-        ...c,
-        is_active: true,
-        page: null, // 🔥 force assign later
-      });
+      const { data: existing } = await supabase
+        .from("coupons")
+        .select("id")
+        .eq("code", c.code)
+        .eq("link", c.link)
+        .maybeSingle();
+
+      if (!existing) {
+        const { error: insertError } = await supabase
+          .from("coupons")
+          .insert({
+            title: c.title,
+            code: c.code,
+            discount: c.discount,
+            link: c.link,
+            affiliate_link: c.affiliate_link || null,
+            expires_at: c.expires_at || null,
+            is_active: true,
+            category: null,
+            page: null, // 🔥 NEW
+          });
+
+        if (insertError) throw insertError;
+      }
 
       await supabase.from("pending_coupons").delete().eq("id", c.id);
 
-      fetchPending();
-      fetchCoupons();
+      await fetchPending();
+      await fetchCoupons();
     } catch (err: any) {
-      alert(err.message);
+      alert("Approve failed: " + err.message);
     }
 
     setLoadingId(null);
+  };
+
+  // ===== REJECT =====
+  const rejectCoupon = async (id: string) => {
+    if (!confirm("Reject this submission?")) return;
+
+    await supabase.from("pending_coupons").delete().eq("id", id);
+    fetchPending();
   };
 
   if (!authorized) {
@@ -219,9 +259,9 @@ export default function AdminPage() {
       <h1 className="admin-header">Admin Panel</h1>
 
       <div className="admin-tabs">
-        <button onClick={() => setTab("add")}>Add</button>
-        <button onClick={() => setTab("manage")}>Manage</button>
-        <button onClick={() => setTab("pending")}>Pending</button>
+        <button onClick={() => setTab("add")} className={tab === "add" ? "active" : ""}>Add</button>
+        <button onClick={() => setTab("manage")} className={tab === "manage" ? "active" : ""}>Manage</button>
+        <button onClick={() => setTab("pending")} className={tab === "pending" ? "active" : ""}>Pending</button>
         {tab === "edit" && <button className="active">Edit</button>}
       </div>
 
@@ -237,7 +277,7 @@ export default function AdminPage() {
           <input placeholder="Affiliate Link" value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
           <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
 
-          {/* 🔥 PAGE SELECT */}
+          {/* 🔥 NEW PAGE SELECT */}
           <select value={form.page} onChange={(e) => setForm({ ...form, page: e.target.value })}>
             <option value="">Select Page</option>
             <option value="clothing">Clothing</option>
@@ -249,32 +289,32 @@ export default function AdminPage() {
             <option value="travel">Travel</option>
           </select>
 
-          <button className="btn-primary" onClick={handleAdd}>
-            Add Coupon
-          </button>
+          <button className="btn-primary" onClick={handleAdd}>Add Coupon</button>
         </div>
       )}
 
       {/* ===== MANAGE ===== */}
       {tab === "manage" && (
         <div className="admin-table">
-
           <div className="admin-row header">
             <span>Title</span>
             <span>Code</span>
             <span>Discount</span>
+            <span>Link</span>
+            <span>Expires</span>
             <span>Category</span>
-            <span>Page</span> {/* 🔥 */}
+            <span>Page</span> {/* 🔥 NEW */}
             <span>Clicks</span>
             <span>Actions</span>
           </div>
 
           {coupons.map((c) => (
             <div key={c.id} className="admin-row">
-
               <span>{c.title}</span>
               <span>{c.code}</span>
               <span>{c.discount}</span>
+              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
+              <span>{formatDate(c.expires_at)}</span>
 
               {/* CATEGORY */}
               <select value={c.category || ""} onChange={(e) => updateCategory(c.id, e.target.value)}>
@@ -299,15 +339,54 @@ export default function AdminPage() {
               <span>{clicksMap[c.id] || 0}</span>
 
               <div style={{ display: "flex", gap: "6px" }}>
-                <button onClick={() => toggleActive(c)}>
+                <button className={`action-btn ${c.is_active ? "btn-active" : "btn-inactive"}`} onClick={() => toggleActive(c)}>
                   {c.is_active ? "Active" : "Off"}
                 </button>
 
-                <button onClick={() => startEdit(c)}>Edit</button>
+                <button className="action-btn btn-edit" onClick={() => startEdit(c)}>Edit</button>
 
-                <button onClick={() => deleteCoupon(c.id)}>Delete</button>
+                <button className="action-btn btn-delete" onClick={() => deleteCoupon(c.id)}>Delete</button>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
 
+      {/* ===== PENDING (UNCHANGED) ===== */}
+      {tab === "pending" && (
+        <div className="admin-table">
+          <div className="admin-row header">
+            <span>Title</span>
+            <span>Code</span>
+            <span>Discount</span>
+            <span>Link</span>
+            <span>Expires</span>
+            <span>Actions</span>
+          </div>
+
+          {pending.map((c) => (
+            <div key={c.id} className="admin-row">
+              <span>{c.title}</span>
+              <span>{c.code}</span>
+              <span>{c.discount}</span>
+
+              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
+
+              <span>{formatDate(c.expires_at)}</span>
+
+              <div style={{ display: "flex", gap: "6px" }}>
+                <button
+                  className="action-btn btn-active"
+                  disabled={loadingId === c.id}
+                  onClick={() => approveCoupon(c)}
+                >
+                  {loadingId === c.id ? "..." : "Approve"}
+                </button>
+
+                <button className="action-btn btn-delete" onClick={() => rejectCoupon(c.id)}>
+                  Reject
+                </button>
+              </div>
             </div>
           ))}
         </div>
