@@ -1477,3 +1477,158 @@ input, a {
   flex-direction: column;
   gap: 40px;
 }
+
+/* PAGE */
+.clothing-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: #e6d7c3;
+}
+
+/* TOP RIGHT */
+.clothing-icon {
+  position: absolute;
+  top: 30px;
+  right: 60px;
+  width: 80px;
+  z-index: 3;
+}
+
+.corner-shape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  z-index: 2;
+}
+
+/* LEFT TABS */
+.brand-tabs {
+  position: absolute;
+  left: 40px;
+  top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.brand-tab {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: #5a2a24;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.brand-tab:hover {
+  transform: translateX(6px);
+}
+
+.brand-tab.active {
+  background: white;
+  color: #5a2a24;
+}
+
+/* MAIN */
+.clothing-content {
+  display: flex;
+  height: 100%;
+  padding-left: 180px;
+}
+
+/* LEFT SIDE */
+.deals-container {
+  width: 55%;
+  padding: 80px 40px;
+}
+
+.clothing-title {
+  font-size: 60px;
+  color: #5a2a24;
+  margin-bottom: 20px;
+}
+
+/* SCROLL AREA */
+.deals-scroll {
+  height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* DEAL CARD */
+.deal-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  transition: 0.3s;
+  position: relative;
+}
+
+.deal-card:hover {
+  transform: scale(1.02);
+}
+
+/* GOLD */
+.deal-card.premium {
+  border: 1px solid gold;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* SECTIONS */
+.deal-left img {
+  width: 60px;
+}
+
+.deal-mid {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.deal-discount {
+  font-weight: bold;
+  color: #5a2a24;
+}
+
+.deal-right button {
+  background: #5a2a24;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* RIGHT MODEL */
+.model-container {
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* FRAME */
+.model-frame {
+  width: 320px;
+  height: 520px;
+  overflow: hidden;
+  border-radius: 30px;
+  transition: transform 0.5s;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.model-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* FLIP */
+.model-frame.flip {
+  transform: rotateY(90deg);
+}
