@@ -182,18 +182,6 @@ export default function AdminPage() {
     fetchCoupons();
   };
 
-  // ✅ NEW: PAGE CATEGORY FUNCTION
-  const updatePageCategory = async (id: string, value: string) => {
-    const pageValue = value === "" ? null : value;
-
-    await supabase
-      .from("coupons")
-      .update({ page_category: pageValue })
-      .eq("id", id);
-
-    fetchCoupons();
-  };
-
   // ===== APPROVE =====
   const approveCoupon = async (c: any) => {
     if (loadingId) return;
@@ -271,6 +259,19 @@ export default function AdminPage() {
         </div>
       )}
 
+      {tab === "edit" && (
+        <div className="auth-box">
+          <h2>Edit Coupon</h2>
+          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+          <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
+          <input value={form.discount} onChange={(e) => setForm({ ...form, discount: e.target.value })} />
+          <input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
+          <input value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
+          <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
+          <button className="btn-primary" onClick={saveEdit}>Save Changes</button>
+        </div>
+      )}
+
       {tab === "manage" && (
         <div className="admin-table">
           <div className="admin-row header">
@@ -280,8 +281,6 @@ export default function AdminPage() {
             <span>Link</span>
             <span>Expires</span>
             <span>Category</span>
-            {/* ✅ NEW COLUMN HEADER */}
-            <span>Page</span>
             <span>Clicks</span>
             <span>Actions</span>
           </div>
@@ -299,19 +298,6 @@ export default function AdminPage() {
                 <option value="new">New</option>
                 <option value="best">Best</option>
                 <option value="used">Used</option>
-              </select>
-
-              {/* ✅ NEW PAGE CATEGORY SELECT */}
-              <select value={c.page_category || ""} onChange={(e) => updatePageCategory(c.id, e.target.value)}>
-                <option value="">None</option>
-                <option value="clothing">Clothing</option>
-                <option value="gaming">Gaming</option>
-                <option value="tech">Tech</option>
-                <option value="shoes">Shoes</option>
-                <option value="beauty">Beauty</option>
-                <option value="home">Home</option>
-                <option value="fitness">Fitness</option>
-                <option value="travel">Travel</option>
               </select>
 
               <span>{clicksMap[c.id] || 0}</span>
