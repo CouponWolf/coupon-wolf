@@ -1475,8 +1475,8 @@ input, a {
 
 .category-icon {
   position: absolute;
-  top: 5px;       /* 🔥 pushed UP */
-  right: 5px;     /* 🔥 pushed RIGHT */
+  top: 0px;       /* 🔥 pushed UP */
+  right: -10px;     /* 🔥 pushed RIGHT */
   width: 160px;    /* 🔥 bigger */
   z-index: 2;
 }
@@ -1530,6 +1530,7 @@ input, a {
 .coupons-scroll {
   width: 65%; /* 🔥 wider */
   overflow-y: auto;
+  padding-left: 15px;
   padding-right: 10px;
 }
 
