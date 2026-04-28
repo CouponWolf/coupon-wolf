@@ -8,14 +8,15 @@ const STORES = ["Nike", "Adidas", "ASOS", "Shein", "Zara"];
 export default function ClothingPage() {
   const [activeStore, setActiveStore] = useState("Nike");
   const [coupons, setCoupons] = useState<any[]>([]);
+  const [modelSrc, setModelSrc] = useState("");
   const [flip, setFlip] = useState(false);
 
   useEffect(() => {
     fetchCoupons(activeStore);
+    loadModel(activeStore);
 
-    // 🔥 trigger flip animation
     setFlip(true);
-    setTimeout(() => setFlip(false), 500);
+    setTimeout(() => setFlip(false), 400);
   }, [activeStore]);
 
   const fetchCoupons = async (store: string) => {
@@ -28,34 +29,45 @@ export default function ClothingPage() {
     if (data) setCoupons(data);
   };
 
-  // ===== 🧠 SMART IMAGE LOGIC =====
-  const getModelImage = () => {
-    const capital = activeStore.charAt(0).toUpperCase() + activeStore.slice(1);
-
-    // try specific model first
+  // ✅ FIXED IMAGE SYSTEM
+  const loadModel = (store: string) => {
+    const capital = store.charAt(0).toUpperCase() + store.slice(1);
     const specific = `/models/${capital}_model.png`;
 
-    // fallback random
-    const fallbackImages = ["/models/model_1.png", "/models/model_2.png", "/models/model_3.png"];
-    const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+    const fallback = [
+      "/models/model_1.png",
+      "/models/model_2.png",
+      "/models/model_3.png",
+    ];
 
-    return specific + "?v=" + new Date().getTime(); // force refresh
+    const img = new Image();
+
+    img.onload = () => {
+      setModelSrc(specific);
+    };
+
+    img.onerror = () => {
+      const random = fallback[Math.floor(Math.random() * fallback.length)];
+      setModelSrc(random);
+    };
+
+    img.src = specific;
   };
 
   return (
     <div className="clothing-page">
 
-      {/* ===== TOP RIGHT VISUAL ===== */}
+      {/* TOP RIGHT */}
       <img src="/panels/corner_shape.png" className="corner-shape" />
       <img src="/categories/clothing.png" className="category-icon" />
 
-      {/* ===== TITLE ===== */}
+      {/* TITLE */}
       <h1 className="clothing-title">CLOTHING</h1>
 
-      {/* ===== MAIN CONTAINER ===== */}
+      {/* MAIN */}
       <div className="clothing-container">
 
-        {/* ===== LEFT TABS ===== */}
+        {/* TABS */}
         <div className="store-tabs">
           {STORES.map((store) => (
             <button
@@ -68,17 +80,18 @@ export default function ClothingPage() {
           ))}
         </div>
 
-        {/* ===== CONTENT ===== */}
+        {/* CONTENT */}
         <div className="clothing-content">
 
-          {/* ===== COUPONS SCROLL ===== */}
+          {/* DEALS */}
           <div className="coupons-scroll">
             {coupons.map((c, i) => (
               <div key={i} className="coupon-card">
-                <div>
+
+                <div className="coupon-info">
                   <h3>{c.title}</h3>
                   <p className="discount">{c.discount}</p>
-                  <span className="code">{c.code}</span>
+                  {c.code && <span className="code">{c.code}</span>}
                 </div>
 
                 <button
@@ -87,13 +100,18 @@ export default function ClothingPage() {
                 >
                   Get Deal
                 </button>
+
               </div>
             ))}
           </div>
 
-          {/* ===== MODEL SIDE ===== */}
-          <div className={`model-box ${flip ? "flip" : ""}`}>
-            <img src={getModelImage()} />
+          {/* MODEL */}
+          <div className="model-box">
+            <img
+              key={modelSrc}
+              className={flip ? "flip" : ""}
+              src={modelSrc}
+            />
           </div>
 
         </div>
