@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-const STORES = ["Nike", "Adidas", "ASOS", "Shein", "Zara"];
+const STORES = ["Nike", "Adidas", "ASOS", "Shein", "Zara", "Others"];
 
 export default function ClothingPage() {
   const [activeStore, setActiveStore] = useState("Nike");
@@ -20,6 +20,16 @@ export default function ClothingPage() {
   }, [activeStore]);
 
   const fetchCoupons = async (store: string) => {
+    if (store === "Others") {
+      const { data } = await supabase
+        .from("coupons")
+        .select("*")
+        .eq("is_active", true);
+
+      if (data) setCoupons(data);
+      return;
+    }
+
     const { data } = await supabase
       .from("coupons")
       .select("*")
@@ -29,29 +39,37 @@ export default function ClothingPage() {
     if (data) setCoupons(data);
   };
 
-  // ✅ FIXED IMAGE SYSTEM
+  // 🔥 MODEL LOGIC (FIXED)
   const loadModel = (store: string) => {
+    if (store === "Others") {
+      const random = Math.floor(Math.random() * 3) + 1;
+      setModelSrc(`/models/model_${random}.png`);
+      return;
+    }
+
     const capital = store.charAt(0).toUpperCase() + store.slice(1);
     const specific = `/models/${capital}_model.png`;
 
-    const fallback = [
-      "/models/model_1.png",
-      "/models/model_2.png",
-      "/models/model_3.png",
-    ];
-
     const img = new Image();
 
-    img.onload = () => {
-      setModelSrc(specific);
-    };
-
+    img.onload = () => setModelSrc(specific);
     img.onerror = () => {
-      const random = fallback[Math.floor(Math.random() * fallback.length)];
-      setModelSrc(random);
+      const random = Math.floor(Math.random() * 3) + 1;
+      setModelSrc(`/models/model_${random}.png`);
     };
 
     img.src = specific;
+  };
+
+  // 🔥 LOGO
+  const getLogo = (url: string) => {
+    try {
+      return new URL(url).hostname
+        .replace("www.", "")
+        .split(".")[0];
+    } catch {
+      return "fallback";
+    }
   };
 
   return (
@@ -87,6 +105,13 @@ export default function ClothingPage() {
           <div className="coupons-scroll">
             {coupons.map((c, i) => (
               <div key={i} className="coupon-card">
+
+                {/* LOGO */}
+                <img
+                  className="card-logo"
+                  src={`/logos/${getLogo(c.link)}.png`}
+                  onError={(e: any) => (e.target.src = "/fallback.png")}
+                />
 
                 <div className="coupon-info">
                   <h3>{c.title}</h3>
