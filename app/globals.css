@@ -1446,60 +1446,34 @@ input, a {
   opacity: 0.7;
 }
 
-/* ===== BRAND TABS ===== */
-.brand-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
+/* ===== CLOTHING PAGE ONLY ===== */
+.clothing-page {
+  min-height: 100vh;
+  padding: 60px 40px;
+  background: #f5efe6;
+
+  overflow-x: hidden; /* 🔥 FIXES YOUR SCROLL BUG */
+}
+
+/* HERO */
+.clothing-hero {
+  text-align: center;
   margin-bottom: 40px;
-  flex-wrap: wrap;
 }
 
-.brand-btn {
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: none;
-  background: #6d2f2a;
-  color: white;
-  cursor: pointer;
-  transition: 0.25s;
-  font-weight: 500;
+.clothing-hero h1 {
+  font-size: 40px;
+  font-weight: 700;
 }
 
-.brand-btn:hover {
-  background: white;
-  color: #6d2f2a;
+.clothing-hero p {
+  margin-top: 10px;
+  opacity: 0.7;
 }
 
-.brand-btn.active {
-  background: #c89b3c;
-  color: #000;
-  box-shadow: 0 0 12px rgba(200, 155, 60, 0.6);
-}
-
-/* ===== CONTENT ===== */
-.clothing-content {
+/* SECTIONS */
+.clothing-sections {
   display: flex;
   flex-direction: column;
   gap: 40px;
-}
-
-/* ===== ANIMATION ===== */
-.animate {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: 0.6s ease;
-}
-
-.animate.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.delay-1 {
-  transition-delay: 0.2s;
-}
-
-.delay-2 {
-  transition-delay: 0.4s;
 }

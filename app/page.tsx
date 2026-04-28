@@ -124,16 +124,27 @@ export default function Home() {
         <div className="dark-panel" />
         <div className="light-panel" />
 
-        {/* 🔥 TOP FLOATING CATEGORY BAR (DOES NOT PUSH CONTENT) */}
+        {/* 🔥 FLOATING CATEGORY BAR */}
         <div className="categories-floating animate">
-          {["Clothing","Gaming","Tech","Shoes","Beauty","Home","Fitness","Travel"].map((cat) => (
-            <button key={cat} className="category-btn">
-              {cat}
-            </button>
+          {[
+            "clothing",
+            "gaming",
+            "tech",
+            "shoes",
+            "beauty",
+            "home",
+            "fitness",
+            "travel",
+          ].map((cat) => (
+            <Link key={cat} href={`/category/${cat}`}>
+              <button className="category-btn">
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </button>
+            </Link>
           ))}
         </div>
 
-        {/* 🔥 NORMAL CONTENT (UNCHANGED POSITION) */}
+        {/* 🔥 CONTENT */}
         <div className="page3-content">
           <h1 className="animate">Explore More Coupons</h1>
 
@@ -148,7 +159,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* FOOTER */}
+        {/* ===== FOOTER ===== */}
         <div className="footer-section">
           <div className="footer-columns">
 
