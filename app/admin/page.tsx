@@ -25,7 +25,7 @@ export default function AdminPage() {
     expires: "",
   });
 
-  // 🔐 PROTECTION (ONLY YOU)
+  // 🔐 AUTH
   useEffect(() => {
     const check = async () => {
       const { data } = await supabase.auth.getUser();
@@ -86,6 +86,7 @@ export default function AdminPage() {
       expires_at: form.expires || null,
       is_active: true,
       category: null,
+      page_category: null, // 🔥 NEW
     });
 
     if (error) return alert(error.message);
@@ -170,13 +171,25 @@ export default function AdminPage() {
     fetchClicks();
   };
 
-  // ===== CATEGORY =====
+  // ===== CATEGORY (HOME PAGE) =====
   const updateCategory = async (id: string, value: string) => {
     const categoryValue = value === "" ? null : value;
 
     await supabase
       .from("coupons")
       .update({ category: categoryValue })
+      .eq("id", id);
+
+    fetchCoupons();
+  };
+
+  // ===== 🔥 NEW: PAGE CATEGORY =====
+  const updatePageCategory = async (id: string, value: string) => {
+    const pageValue = value === "" ? null : value;
+
+    await supabase
+      .from("coupons")
+      .update({ page_category: pageValue })
       .eq("id", id);
 
     fetchCoupons();
@@ -207,6 +220,7 @@ export default function AdminPage() {
             expires_at: c.expires_at || null,
             is_active: true,
             category: null,
+            page_category: null, // 🔥 NEW
           });
 
         if (insertError) throw insertError;
@@ -246,32 +260,7 @@ export default function AdminPage() {
         {tab === "edit" && <button className="active">Edit</button>}
       </div>
 
-      {tab === "add" && (
-        <div className="auth-box">
-          <h2>Add Coupon</h2>
-          <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          <input placeholder="Code" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
-          <input placeholder="Discount" value={form.discount} onChange={(e) => setForm({ ...form, discount: e.target.value })} />
-          <input placeholder="Link" value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
-          <input placeholder="Affiliate Link" value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
-          <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
-          <button className="btn-primary" onClick={handleAdd}>Add Coupon</button>
-        </div>
-      )}
-
-      {tab === "edit" && (
-        <div className="auth-box">
-          <h2>Edit Coupon</h2>
-          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
-          <input value={form.discount} onChange={(e) => setForm({ ...form, discount: e.target.value })} />
-          <input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
-          <input value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
-          <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
-          <button className="btn-primary" onClick={saveEdit}>Save Changes</button>
-        </div>
-      )}
-
+      {/* ===== MANAGE TAB ===== */}
       {tab === "manage" && (
         <div className="admin-table">
           <div className="admin-row header">
@@ -281,6 +270,7 @@ export default function AdminPage() {
             <span>Link</span>
             <span>Expires</span>
             <span>Category</span>
+            <span>Page</span> {/* 🔥 NEW */}
             <span>Clicks</span>
             <span>Actions</span>
           </div>
@@ -293,11 +283,24 @@ export default function AdminPage() {
               <a href={c.link} target="_blank" className="truncate">{c.link}</a>
               <span>{formatDate(c.expires_at)}</span>
 
+              {/* OLD CATEGORY */}
               <select value={c.category || ""} onChange={(e) => updateCategory(c.id, e.target.value)}>
                 <option value="">None</option>
                 <option value="new">New</option>
                 <option value="best">Best</option>
                 <option value="used">Used</option>
+              </select>
+
+              {/* 🔥 NEW PAGE CATEGORY */}
+              <select value={c.page_category || ""} onChange={(e) => updatePageCategory(c.id, e.target.value)}>
+                <option value="">None</option>
+                <option value="clothing">Clothing</option>
+                <option value="gaming">Gaming</option>
+                <option value="tech">Tech</option>
+                <option value="beauty">Beauty</option>
+                <option value="home">Home</option>
+                <option value="fitness">Fitness</option>
+                <option value="travel">Travel</option>
               </select>
 
               <span>{clicksMap[c.id] || 0}</span>
@@ -310,45 +313,6 @@ export default function AdminPage() {
                 <button className="action-btn btn-edit" onClick={() => startEdit(c)}>Edit</button>
 
                 <button className="action-btn btn-delete" onClick={() => deleteCoupon(c.id)}>Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {tab === "pending" && (
-        <div className="admin-table">
-          <div className="admin-row header">
-            <span>Title</span>
-            <span>Code</span>
-            <span>Discount</span>
-            <span>Link</span>
-            <span>Expires</span>
-            <span>Actions</span>
-          </div>
-
-          {pending.map((c) => (
-            <div key={c.id} className="admin-row">
-              <span>{c.title}</span>
-              <span>{c.code}</span>
-              <span>{c.discount}</span>
-
-              <a href={c.link} target="_blank" className="truncate">{c.link}</a>
-
-              <span>{formatDate(c.expires_at)}</span>
-
-              <div style={{ display: "flex", gap: "6px" }}>
-                <button
-                  className="action-btn btn-active"
-                  disabled={loadingId === c.id}
-                  onClick={() => approveCoupon(c)}
-                >
-                  {loadingId === c.id ? "..." : "Approve"}
-                </button>
-
-                <button className="action-btn btn-delete" onClick={() => rejectCoupon(c.id)}>
-                  Reject
-                </button>
               </div>
             </div>
           ))}
