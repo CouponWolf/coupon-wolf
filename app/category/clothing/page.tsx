@@ -20,16 +20,20 @@ export default function ClothingPage() {
   }, [activeStore]);
 
   const fetchCoupons = async (store: string) => {
+
+    // 🟡 OTHER TAB → ONLY PAGE_CATEGORY = clothing
     if (store === "Others") {
       const { data } = await supabase
         .from("coupons")
         .select("*")
-        .eq("is_active", true);
+        .eq("is_active", true)
+        .eq("page_category", "clothing"); // ✅ FILTER
 
       if (data) setCoupons(data);
       return;
     }
 
+    // 🟢 MAIN BRANDS → ALWAYS SHOW THEIR OWN DEALS
     const { data } = await supabase
       .from("coupons")
       .select("*")
