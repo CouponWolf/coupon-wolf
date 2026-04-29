@@ -25,7 +25,7 @@ export default function AdminPage() {
     expires: "",
   });
 
-  // 🔐 PROTECTION (ONLY YOU)
+  // 🔐 PROTECTION
   useEffect(() => {
     const check = async () => {
       const { data } = await supabase.auth.getUser();
@@ -86,7 +86,7 @@ export default function AdminPage() {
       expires_at: form.expires || null,
       is_active: true,
       category: null,
-      page_category: null, // 🔥 ADDED
+      page_category: null, // ✅ NEW
     });
 
     if (error) return alert(error.message);
@@ -171,7 +171,7 @@ export default function AdminPage() {
     fetchClicks();
   };
 
-  // ===== CATEGORY =====
+  // ===== CATEGORY (HOME PAGE) =====
   const updateCategory = async (id: string, value: string) => {
     const categoryValue = value === "" ? null : value;
 
@@ -183,7 +183,7 @@ export default function AdminPage() {
     fetchCoupons();
   };
 
-  // 🔥 NEW FUNCTION
+  // ===== 🆕 PAGE CATEGORY (NEW) =====
   const updatePageCategory = async (id: string, value: string) => {
     const pageValue = value === "" ? null : value;
 
@@ -220,7 +220,7 @@ export default function AdminPage() {
             expires_at: c.expires_at || null,
             is_active: true,
             category: null,
-            page_category: null, // 🔥 ADDED
+            page_category: null, // ✅ NEW
           });
 
         if (insertError) throw insertError;
@@ -260,7 +260,18 @@ export default function AdminPage() {
         {tab === "edit" && <button className="active">Edit</button>}
       </div>
 
-      {/* ADD + EDIT + PENDING UNTOUCHED */}
+      {tab === "add" && (
+        <div className="auth-box">
+          <h2>Add Coupon</h2>
+          <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+          <input placeholder="Code" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
+          <input placeholder="Discount" value={form.discount} onChange={(e) => setForm({ ...form, discount: e.target.value })} />
+          <input placeholder="Link" value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
+          <input placeholder="Affiliate Link" value={form.affiliate_link} onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })} />
+          <input type="date" value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
+          <button className="btn-primary" onClick={handleAdd}>Add Coupon</button>
+        </div>
+      )}
 
       {tab === "manage" && (
         <div className="admin-table">
@@ -271,7 +282,7 @@ export default function AdminPage() {
             <span>Link</span>
             <span>Expires</span>
             <span>Category</span>
-            <span>Page</span> {/* 🔥 NEW */}
+            <span>Page</span> {/* ✅ NEW */}
             <span>Clicks</span>
             <span>Actions</span>
           </div>
@@ -284,6 +295,7 @@ export default function AdminPage() {
               <a href={c.link} target="_blank" className="truncate">{c.link}</a>
               <span>{formatDate(c.expires_at)}</span>
 
+              {/* HOME CATEGORY */}
               <select value={c.category || ""} onChange={(e) => updateCategory(c.id, e.target.value)}>
                 <option value="">None</option>
                 <option value="new">New</option>
@@ -291,12 +303,13 @@ export default function AdminPage() {
                 <option value="used">Used</option>
               </select>
 
-              {/* 🔥 NEW */}
+              {/* 🔥 NEW PAGE CATEGORY */}
               <select value={c.page_category || ""} onChange={(e) => updatePageCategory(c.id, e.target.value)}>
                 <option value="">None</option>
                 <option value="clothing">Clothing</option>
                 <option value="gaming">Gaming</option>
                 <option value="tech">Tech</option>
+                <option value="shoes">Shoes</option>
                 <option value="beauty">Beauty</option>
                 <option value="home">Home</option>
                 <option value="fitness">Fitness</option>
@@ -319,7 +332,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* 🔥 PENDING TAB STILL HERE */}
       {tab === "pending" && (
         <div className="admin-table">
           <div className="admin-row header">
