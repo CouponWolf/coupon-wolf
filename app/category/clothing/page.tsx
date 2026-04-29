@@ -8,25 +8,15 @@ const STORES = ["Nike", "Adidas", "ASOS", "Shein", "Zara", "Others"];
 export default function ClothingPage() {
   const [activeStore, setActiveStore] = useState("Nike");
   const [coupons, setCoupons] = useState<any[]>([]);
-  const [affiliateRules, setAffiliateRules] = useState<any[]>([]);
-
   const [modelSrc, setModelSrc] = useState("");
   const [flip, setFlip] = useState(false);
 
-  // 🔥 POPUP
+  // 🔥 popup
   const [popup, setPopup] = useState({ show: false, x: 0, y: 0 });
 
-  // 🔥 ADS SYSTEM
+  // 🔥 ads system
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
-
-  // ===== INIT =====
-  useEffect(() => {
-    fetchAffiliateRules();
-
-    const stored = JSON.parse(localStorage.getItem("unlockedCoupons") || "{}");
-    setUnlocked(stored);
-  }, []);
 
   useEffect(() => {
     fetchCoupons(activeStore);
@@ -34,64 +24,65 @@ export default function ClothingPage() {
 
     setFlip(true);
     setTimeout(() => setFlip(false), 400);
+
+    const stored = JSON.parse(localStorage.getItem("unlockedCoupons") || "{}");
+    setUnlocked(stored);
   }, [activeStore]);
 
-  // ===== FETCH COUPONS =====
+  // ===== FETCH =====
   const fetchCoupons = async (store: string) => {
-    let query = supabase
-      .from("coupons")
-      .select("*")
-      .eq("is_active", true);
-
     if (store === "Others") {
-      query = query.eq("page_category", "clothing");
-    } else {
-      query = query.ilike("link", `%${store.toLowerCase()}%`);
+      const { data } = await supabase
+        .from("coupons")
+        .select("*")
+        .eq("is_active", true)
+        .eq("page_category", "clothing");
+
+      if (data) setCoupons(data);
+      return;
     }
 
-    const { data } = await query;
+    const { data } = await supabase
+      .from("coupons")
+      .select("*")
+      .ilike("link", `%${store.toLowerCase()}%`)
+      .eq("is_active", true);
 
     if (data) setCoupons(data);
   };
 
-  // ===== AFFILIATE =====
-  const fetchAffiliateRules = async () => {
-    const { data } = await supabase.from("affiliate_rules").select("*");
-    if (data) setAffiliateRules(data);
-  };
-
-  const buildAffiliateLink = (url: string) => {
-    try {
-      const parsed = new URL(url);
-      const domain = parsed.hostname.replace("www.", "");
-
-      const rule = affiliateRules.find((r) =>
-        domain.includes(r.domain)
-      );
-
-      if (!rule) return url;
-
-      if (url.includes("?")) {
-        return url + "&" + rule.affiliate_param.replace("?", "");
-      }
-
-      return url + rule.affiliate_param;
-    } catch {
-      return url;
+  // ===== MODEL =====
+  const loadModel = (store: string) => {
+    if (store === "Others") {
+      const random = Math.floor(Math.random() * 3) + 1;
+      setModelSrc(`/models/model_${random}.png`);
+      return;
     }
+
+    const capital = store.charAt(0).toUpperCase() + store.slice(1);
+    const img = new Image();
+
+    const path = `/models/${capital}_model.png`;
+
+    img.onload = () => setModelSrc(path);
+    img.onerror = () => {
+      const random = Math.floor(Math.random() * 3) + 1;
+      setModelSrc(`/models/model_${random}.png`);
+    };
+
+    img.src = path;
   };
 
-  // ===== LOGIC =====
+  // ===== HELPERS =====
   const hasCode = (c: any) => c.code && c.code.trim() !== "";
 
   const isCheap = (c: any) => {
     const d = (c.discount || "").toLowerCase();
-
     const p = d.match(/(\d+)%/);
-    const $ = d.match(/\$?(\d+)/);
+    const dol = d.match(/\$?(\d+)/);
 
     const percent = p ? parseInt(p[1]) : null;
-    const dollars = $ ? parseInt($[1]) : null;
+    const dollars = dol ? parseInt(dol[1]) : null;
 
     if (percent !== null && percent <= 15) return true;
     if (dollars !== null && dollars <= 10) return true;
@@ -99,7 +90,8 @@ export default function ClothingPage() {
     return false;
   };
 
-  // ===== AD =====
+  const buildAffiliate = (url: string) => url;
+
   const watchAd = (id: string) => {
     if (adLoading) return;
 
@@ -107,20 +99,19 @@ export default function ClothingPage() {
 
     setTimeout(() => {
       const updated = { ...unlocked, [id]: true };
-
       setUnlocked(updated);
       localStorage.setItem("unlockedCoupons", JSON.stringify(updated));
-
       setAdLoading(null);
     }, 2000);
   };
 
-  // ===== CLICK =====
+  // ===== CLICK BUTTON ONLY =====
   const handleClick = async (c: any, e: any) => {
-    const finalLink = buildAffiliateLink(c.link);
+    e.stopPropagation();
 
     const has_coupon = hasCode(c);
     const cheap = isCheap(c);
+    const finalLink = buildAffiliate(c.link);
 
     // NO CODE
     if (!has_coupon) {
@@ -162,33 +153,18 @@ export default function ClothingPage() {
     }, 700);
   };
 
-  // ===== MODEL =====
-  const loadModel = (store: string) => {
-    if (store === "Others") {
-      const r = Math.floor(Math.random() * 3) + 1;
-      setModelSrc(`/models/model_${r}.png`);
-      return;
-    }
-
-    const name = store.charAt(0).toUpperCase() + store.slice(1);
-    setModelSrc(`/models/${name}_model.png`);
-  };
-
-  // ===== LOGO =====
   const getLogo = (url: string) => {
     try {
-      return new URL(url).hostname
-        .replace("www.", "")
-        .split(".")[0];
+      return new URL(url).hostname.replace("www.", "").split(".")[0];
     } catch {
       return "fallback";
     }
   };
 
+  // ===== UI =====
   return (
     <div className="clothing-page">
 
-      {/* TOP RIGHT */}
       <img src="/panels/corner_shape.png" className="corner-shape" />
       <img src="/categories/clothing.png" className="category-icon" />
 
@@ -209,6 +185,7 @@ export default function ClothingPage() {
           ))}
         </div>
 
+        {/* CONTENT */}
         <div className="clothing-content">
 
           {/* DEALS */}
@@ -216,15 +193,13 @@ export default function ClothingPage() {
             {coupons.map((c, i) => {
               const has_coupon = hasCode(c);
               const cheap = isCheap(c);
-              const isUnlocked = unlocked[c.id];
+              const unlockedNow = unlocked[c.id];
+
               const isPremium = has_coupon && !cheap;
 
               return (
-                <div
-                  key={i}
-                  className={`coupon-card ${isPremium ? "premium" : ""}`}
-                  onClick={(e) => handleClick(c, e)}
-                >
+                <div key={i} className="coupon-card">
+
                   <img
                     className="card-logo"
                     src={`/logos/${getLogo(c.link)}.png`}
@@ -234,22 +209,33 @@ export default function ClothingPage() {
                   <div className="coupon-info">
                     <h3>{c.title}</h3>
                     <p className="discount">{c.discount}</p>
+
+                    {has_coupon && (
+                      <span className="code">
+                        {cheap
+                          ? c.code
+                          : unlockedNow
+                          ? c.code
+                          : "PREMIUM CODE"}
+                      </span>
+                    )}
                   </div>
 
-                  {/* OVERLAY */}
-                  {has_coupon && (
-                    <div className="overlay">
-                      {cheap ? (
-                        <span>{c.code}</span>
-                      ) : isUnlocked ? (
-                        <span>{c.code}</span>
-                      ) : adLoading === c.id ? (
-                        <span>Loading Ad...</span>
-                      ) : (
-                        <span>Watch Ad</span>
-                      )}
-                    </div>
-                  )}
+                  <button
+                    className="go-btn"
+                    onClick={(e) => handleClick(c, e)}
+                  >
+                    {!has_coupon
+                      ? "Get Deal"
+                      : cheap
+                      ? "Get Code"
+                      : unlockedNow
+                      ? "Get Code"
+                      : adLoading === c.id
+                      ? "Loading..."
+                      : "Watch Ad"}
+                  </button>
+
                 </div>
               );
             })}
