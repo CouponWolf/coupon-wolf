@@ -227,7 +227,21 @@ export default function CouponRow({ title, category }: any) {
 
       <h2 className="animate">{title}</h2>
 
-      <div className="carousel" ref={carouselRef}>
+      <div
+        className="carousel"
+        ref={carouselRef}
+        onWheel={(e) => {
+          if (!carouselRef.current) return;
+
+          const container = carouselRef.current;
+
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            e.stopPropagation();
+            container.scrollLeft += e.deltaY;
+          }
+        }}
+      >
         <div className="carousel-track" ref={trackRef}>
           {loopedCoupons.map((c, i) => {
             const has_coupon = hasCode(c);
