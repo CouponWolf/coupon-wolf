@@ -10,7 +10,6 @@ export default function SearchCoupons() {
 
   const [popup, setPopup] = useState({ show: false, x: 0, y: 0 });
 
-  // 🔥 ads system
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
 
@@ -20,7 +19,6 @@ export default function SearchCoupons() {
   useEffect(() => {
     fetchAffiliateRules();
 
-    // 🔥 LOAD FROM LOCAL STORAGE
     const saved = localStorage.getItem("unlockedCoupons");
     if (saved) {
       setUnlocked(JSON.parse(saved));
@@ -40,12 +38,17 @@ export default function SearchCoupons() {
     return () => clearTimeout(delay);
   }, [query]);
 
-  // ===== FETCH =====
+  // ===== FETCH (UPDATED) =====
   const searchCoupons = async () => {
+    const now = new Date().toISOString();
+
     const { data } = await supabase
       .from("coupons")
       .select("*")
-      .ilike("link", `%${query}%`)
+      .or(
+        `link.ilike.%${query}%,title.ilike.%${query}%,page_category.ilike.%${query}%`
+      )
+      .or(`expires_at.gt.${now},expires_at.is.null`)
       .eq("is_active", true);
 
     if (data) setResults(data);
@@ -61,6 +64,8 @@ export default function SearchCoupons() {
 
   // ===== AFFILIATE =====
   const buildAffiliateLink = (url: string) => {
+    if (!url) return ""; // ✅ prevent errors
+
     try {
       const parsed = new URL(url);
       const domain = parsed.hostname.replace("www.", "");
@@ -81,7 +86,7 @@ export default function SearchCoupons() {
     }
   };
 
-  // ===== 🧠 LOGIC =====
+  // ===== LOGIC =====
   const hasCode = (coupon: any) => {
     return coupon.code && coupon.code.trim() !== "";
   };
@@ -101,7 +106,12 @@ export default function SearchCoupons() {
     return false;
   };
 
-  // ===== 🔥 HOVER SCROLL =====
+  // ===== 🆕 TITLE LOGO =====
+  const getTitleLogo = (title: string) => {
+    return title.toLowerCase().replace(/\s+/g, "_");
+  };
+
+  // ===== SCROLL =====
   useEffect(() => {
     const container = carouselRef.current;
     const track = trackRef.current;
@@ -129,7 +139,7 @@ export default function SearchCoupons() {
     };
   }, []);
 
-  // ===== 🔥 FAKE AD + SAVE =====
+  // ===== AD =====
   const watchAd = (couponId: string) => {
     if (adLoading) return;
 
@@ -142,28 +152,26 @@ export default function SearchCoupons() {
       };
 
       setUnlocked(updated);
-
-      // 🔥 SAVE TO LOCAL STORAGE
       localStorage.setItem("unlockedCoupons", JSON.stringify(updated));
 
       setAdLoading(null);
     }, 2000);
   };
 
-  // ===== CLICK =====
+  // ===== CLICK (FIXED) =====
   const handleClick = async (coupon: any, e: any) => {
     const has_coupon = hasCode(coupon);
     const cheap = isCheap(coupon);
 
     const finalLink = buildAffiliateLink(coupon.link);
 
-    // ❌ NO CODE → DIRECT
+    // ❌ NO CODE
     if (!has_coupon) {
-      window.open(finalLink, "_blank");
+      if (finalLink) window.open(finalLink, "_blank");
       return;
     }
 
-    // 🟢 CHEAP → FREE
+    // 🟢 CHEAP
     if (cheap) {
       navigator.clipboard.writeText(coupon.code);
 
@@ -179,7 +187,7 @@ export default function SearchCoupons() {
 
       setTimeout(() => {
         setPopup({ show: false, x: 0, y: 0 });
-        window.open(finalLink, "_blank");
+        if (finalLink) window.open(finalLink, "_blank");
       }, 700);
 
       return;
@@ -205,7 +213,7 @@ export default function SearchCoupons() {
 
     setTimeout(() => {
       setPopup({ show: false, x: 0, y: 0 });
-      window.open(finalLink, "_blank");
+      if (finalLink) window.open(finalLink, "_blank");
     }, 700);
   };
 
@@ -216,7 +224,7 @@ export default function SearchCoupons() {
         .split(".")[0]
         .toLowerCase();
     } catch {
-      return "fallback";
+      return null;
     }
   };
 
@@ -225,31 +233,24 @@ export default function SearchCoupons() {
 
       <input
         className="search-input"
-        placeholder="Search for a website (Amazon, Nike...)"
+        placeholder="Search deals, websites..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      <div
-        className="carousel"
-        ref={carouselRef}
-        onWheel={(e) => {
-          if (!carouselRef.current) return;
-
-          const container = carouselRef.current;
-
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            e.preventDefault();
-            e.stopPropagation();
-            container.scrollLeft += e.deltaY;
-          }
-        }}
-      >
+      <div className="carousel" ref={carouselRef}>
         <div className="carousel-track" ref={trackRef}>
           {results.map((c, i) => {
             const has_coupon = hasCode(c);
             const cheap = isCheap(c);
             const isUnlocked = unlocked[c.id];
+
+            const domain = getDomainName(c.link);
+            const titleLogo = getTitleLogo(c.title);
+
+            const logoPath = domain
+              ? `/logos/${domain}.png`
+              : `/logos/${titleLogo}.png`;
 
             return (
               <div
@@ -260,7 +261,7 @@ export default function SearchCoupons() {
                 onClick={(e) => handleClick(c, e)}
               >
                 <img
-                  src={`/logos/${getDomainName(c.link)}.png`}
+                  src={logoPath}
                   onError={(e: any) => {
                     e.target.src = "/fallback.png";
                   }}
