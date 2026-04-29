@@ -9,6 +9,7 @@ export default function CouponRow({ title, category }: any) {
 
   const [popup, setPopup] = useState({ show: false, x: 0, y: 0 });
 
+  // 🔥 ads system
   const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [adLoading, setAdLoading] = useState<string | null>(null);
 
@@ -45,13 +46,10 @@ export default function CouponRow({ title, category }: any) {
 
   const loopedCoupons = [...coupons, ...coupons, ...coupons];
 
-  // ===== NEW: CHECK LINK =====
-  const hasLink = (coupon: any) => {
-    return coupon.link && coupon.link.trim() !== "";
-  };
-
   // ===== BUILD AFFILIATE =====
   const buildAffiliateLink = (url: string) => {
+    if (!url) return ""; // ✅ FIX: avoid invalid URL
+
     try {
       const parsed = new URL(url);
       const domain = parsed.hostname.replace("www.", "");
@@ -72,7 +70,7 @@ export default function CouponRow({ title, category }: any) {
     }
   };
 
-  // ===== TYPE CHECK =====
+  // ===== 🧠 CHECK TYPE =====
   const hasCode = (coupon: any) => {
     return coupon.code && coupon.code.trim() !== "";
   };
@@ -92,7 +90,14 @@ export default function CouponRow({ title, category }: any) {
     return false;
   };
 
-  // ===== SCROLL =====
+  // ===== 🆕 TITLE → LOGO NAME =====
+  const getTitleLogo = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/\s+/g, "_"); // spaces → _
+  };
+
+  // ===== HOVER SCROLL =====
   useEffect(() => {
     const container = carouselRef.current;
     const track = trackRef.current;
@@ -120,7 +125,7 @@ export default function CouponRow({ title, category }: any) {
     };
   }, []);
 
-  // ===== AD =====
+  // ===== 🔥 FAKE AD =====
   const watchAd = (couponId: string) => {
     if (adLoading) return;
 
@@ -139,21 +144,22 @@ export default function CouponRow({ title, category }: any) {
     }, 2000);
   };
 
-  // ===== CLICK FIXED =====
+  // ===== CLICK =====
   const handleClick = async (coupon: any, e: any) => {
     const has_coupon = hasCode(coupon);
     const cheap = isCheap(coupon);
-    const linkExists = hasLink(coupon);
 
-    const finalLink = buildAffiliateLink(coupon.link || "");
+    const finalLink = buildAffiliateLink(coupon.link);
 
-    // ===== NO CODE =====
+    // ✅ NO CODE
     if (!has_coupon) {
-      if (linkExists) window.open(finalLink, "_blank");
+      if (finalLink) {
+        window.open(finalLink, "_blank");
+      }
       return;
     }
 
-    // ===== CHEAP =====
+    // ✅ CHEAP
     if (cheap) {
       navigator.clipboard.writeText(coupon.code);
 
@@ -161,17 +167,24 @@ export default function CouponRow({ title, category }: any) {
         { coupon_id: coupon.id }
       ]);
 
-      setPopup({ show: true, x: e.clientX, y: e.clientY });
+      setPopup({
+        show: true,
+        x: e.clientX,
+        y: e.clientY,
+      });
 
       setTimeout(() => {
         setPopup({ show: false, x: 0, y: 0 });
-        if (linkExists) window.open(finalLink, "_blank);
+
+        if (finalLink) {
+          window.open(finalLink, "_blank"); // ✅ ONLY if exists
+        }
       }, 700);
 
       return;
     }
 
-    // ===== PREMIUM =====
+    // ✅ PREMIUM
     if (!unlocked[coupon.id]) {
       watchAd(coupon.id);
       return;
@@ -183,15 +196,21 @@ export default function CouponRow({ title, category }: any) {
       { coupon_id: coupon.id }
     ]);
 
-    setPopup({ show: true, x: e.clientX, y: e.clientY });
+    setPopup({
+      show: true,
+      x: e.clientX,
+      y: e.clientY,
+    });
 
     setTimeout(() => {
       setPopup({ show: false, x: 0, y: 0 });
-      if (linkExists) window.open(finalLink, "_blank");
+
+      if (finalLink) {
+        window.open(finalLink, "_blank"); // ✅ ONLY if exists
+      }
     }, 700);
   };
 
-  // ===== LOGO FROM LINK =====
   const getDomainName = (url: string) => {
     try {
       return new URL(url).hostname
@@ -199,15 +218,8 @@ export default function CouponRow({ title, category }: any) {
         .split(".")[0]
         .toLowerCase();
     } catch {
-      return null;
+      return "fallback";
     }
-  };
-
-  // ===== NEW: LOGO FROM TITLE =====
-  const getLogoFromTitle = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/\s+/g, "_"); // keep symbols like :
   };
 
   return (
@@ -218,27 +230,27 @@ export default function CouponRow({ title, category }: any) {
       <div className="carousel" ref={carouselRef}>
         <div className="carousel-track" ref={trackRef}>
           {loopedCoupons.map((c, i) => {
-
             const has_coupon = hasCode(c);
             const cheap = isCheap(c);
             const isUnlocked = unlocked[c.id];
+            const isPremium = has_coupon && !cheap;
 
-            const domain = getDomainName(c.link);
-            const titleLogo = getLogoFromTitle(c.title);
-
-            const logoPath = domain
-              ? `/logos/${domain}.png`
-              : `/logos/${titleLogo}.png`;
+            const domainLogo = getDomainName(c.link);
+            const titleLogo = getTitleLogo(c.title);
 
             return (
               <div
                 key={i}
-                className={`card ${has_coupon && !cheap ? "premium-card" : ""}`}
+                className={`card ${isPremium ? "premium-card" : ""}`}
                 onClick={(e) => handleClick(c, e)}
               >
+                {/* ✅ LOGO SYSTEM FIXED */}
                 <img
-                  src={logoPath}
-                  onError={(e: any) => (e.target.src = "/fallback.png")}
+                  src={`/logos/${domainLogo}.png`}
+                  onError={(e: any) => {
+                    e.target.onerror = null;
+                    e.target.src = `/logos/${titleLogo}.png`;
+                  }}
                 />
 
                 <div className="card-info">
