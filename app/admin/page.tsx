@@ -273,6 +273,52 @@ export default function AdminPage() {
         </div>
       )}
 
+      {tab === "edit" && (
+        <div className="auth-box">
+          <h2>Edit Coupon</h2>
+
+          <input
+            placeholder="Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+          />
+
+          <input
+            placeholder="Code"
+            value={form.code}
+            onChange={(e) => setForm({ ...form, code: e.target.value })}
+          />
+
+          <input
+            placeholder="Discount"
+            value={form.discount}
+            onChange={(e) => setForm({ ...form, discount: e.target.value })}
+          />
+
+          <input
+            placeholder="Link"
+            value={form.link}
+            onChange={(e) => setForm({ ...form, link: e.target.value })}
+          />
+
+          <input
+            placeholder="Affiliate Link"
+            value={form.affiliate_link}
+            onChange={(e) => setForm({ ...form, affiliate_link: e.target.value })}
+          />
+
+          <input
+            type="date"
+            value={form.expires}
+            onChange={(e) => setForm({ ...form, expires: e.target.value })}
+          />
+
+          <button className="btn-primary" onClick={saveEdit}>
+            Save Changes
+          </button>
+        </div>
+      )}
+
       {tab === "manage" && (
         <div className="admin-table">
           <div className="admin-row header">
