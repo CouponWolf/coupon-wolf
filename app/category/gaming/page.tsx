@@ -37,7 +37,6 @@ export default function GamingPage() {
   // ===== FETCH =====
   const fetchCoupons = async (game: string) => {
 
-    // OTHERS → ONLY GAMING CATEGORY
     if (game === "Others") {
       const { data } = await supabase
         .from("coupons")
@@ -49,7 +48,6 @@ export default function GamingPage() {
       return;
     }
 
-    // MAIN GAMES → MATCH TITLE
     const { data } = await supabase
       .from("coupons")
       .select("*")
@@ -59,31 +57,28 @@ export default function GamingPage() {
     if (data) setCoupons(data);
   };
 
-  // ===== COVER (LIKE MODEL) =====
+  // ===== COVER =====
   const loadCover = (game: string) => {
 
     if (game === "Others") {
       const random = Math.floor(Math.random() * 3) + 1;
-      setModelSrc(`/models/model_${random}.png`);
+      setCoverSrc(`/models/model_${random}.png`); // ✅ FIXED
       return;
     }
 
-    // ✅ CREATE formatted HERE
     const formatted = game
       .toLowerCase()
       .replace(/\s+/g, "_")
       .replace(/:/g, "_");
 
     const img = new Image();
-
-    // ✅ USE IT HERE
     const path = `/gaming-covers/${formatted}_cover.png`;
 
-    img.onload = () => setModelSrc(path);
+    img.onload = () => setCoverSrc(path); // ✅ FIXED
 
     img.onerror = () => {
       const random = Math.floor(Math.random() * 3) + 1;
-      setModelSrc(`/models/model_${random}.png`);
+      setCoverSrc(`/models/model_${random}.png`); // ✅ FIXED
     };
 
     img.src = path;
@@ -126,7 +121,7 @@ export default function GamingPage() {
     const has_coupon = hasCode(c);
     const cheap = isCheap(c);
 
-    // 🔥 NO LINK (games case)
+    // 🔥 NO LINK
     if (!c.link) {
       navigator.clipboard.writeText(c.code);
 
@@ -178,7 +173,7 @@ export default function GamingPage() {
     }, 700);
   };
 
-  // 🔥 TITLE LOGO (IMPORTANT)
+  // ===== LOGO =====
   const getLogo = (title: string) => {
     return title.toLowerCase().replace(/\s+/g, "_");
   };
@@ -194,7 +189,6 @@ export default function GamingPage() {
 
       <div className="clothing-container">
 
-        {/* TABS */}
         <div className="store-tabs">
           {GAMES.map((g) => (
             <button
@@ -207,10 +201,8 @@ export default function GamingPage() {
           ))}
         </div>
 
-        {/* CONTENT */}
         <div className="clothing-content">
 
-          {/* DEALS */}
           <div className="coupons-scroll">
             {coupons.map((c, i) => {
               const has_coupon = hasCode(c);
@@ -261,7 +253,6 @@ export default function GamingPage() {
             })}
           </div>
 
-          {/* COVER */}
           <div className="model-box">
             <img key={coverSrc} className={flip ? "flip" : ""} src={coverSrc} />
           </div>
@@ -269,7 +260,6 @@ export default function GamingPage() {
         </div>
       </div>
 
-      {/* POPUP */}
       {popup.show && (
         <div
           className="copy-popup"
