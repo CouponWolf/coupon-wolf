@@ -1476,7 +1476,7 @@ input, a {
 .category-icon {
   position: absolute;
   top: 0px;       /* 🔥 pushed UP */
-  right: -10px;     /* 🔥 pushed RIGHT */
+  right: 0px;     /* 🔥 pushed RIGHT */
   width: 160px;    /* 🔥 bigger */
   z-index: 2;
 }
