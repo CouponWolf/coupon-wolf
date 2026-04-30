@@ -61,20 +61,29 @@ export default function GamingPage() {
 
   // ===== COVER (LIKE MODEL) =====
   const loadCover = (game: string) => {
+
     if (game === "Others") {
-      const path = `/gaming-covers/${formatted}_cover.png`;
+      const random = Math.floor(Math.random() * 3) + 1;
+      setModelSrc(`/models/model_${random}.png`);
       return;
     }
 
-    const name = game.toLowerCase().replace(/\s+/g, "_");
-    const path = `/gaming-covers/${name}.png`;
+    // ✅ CREATE formatted HERE
+    const formatted = game
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/:/g, "_");
 
     const img = new Image();
 
-    img.onload = () => setCoverSrc(path);
+    // ✅ USE IT HERE
+    const path = `/gaming-covers/${formatted}_cover.png`;
+
+    img.onload = () => setModelSrc(path);
+
     img.onerror = () => {
       const random = Math.floor(Math.random() * 3) + 1;
-      setCoverSrc(`/gaming-covers/model_${random}.png`);
+      setModelSrc(`/models/model_${random}.png`);
     };
 
     img.src = path;
