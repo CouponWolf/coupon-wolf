@@ -62,8 +62,7 @@ export default function GamingPage() {
   // ===== COVER (LIKE MODEL) =====
   const loadCover = (game: string) => {
     if (game === "Others") {
-      const random = Math.floor(Math.random() * 3) + 1;
-      setCoverSrc(`/gaming-covers/model_${random}.png`);
+      const path = `/gaming-covers/${formatted}_cover.png`;
       return;
     }
 
