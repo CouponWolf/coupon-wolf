@@ -60,25 +60,25 @@ export default function GamingPage() {
   // ===== COVER =====
   const loadCover = (game: string) => {
 
+    // ✅ OTHERS
     if (game === "Others") {
-      const random = Math.floor(Math.random() * 3) + 1;
-      setCoverSrc(`/models/model_${random}.png`); // ✅ FIXED
+      setCoverSrc("/gaming-covers/others_cover.png");
       return;
     }
 
+    // ✅ FORMAT WITH "-"
     const formatted = game
       .toLowerCase()
-      .replace(/\s+/g, "_")
-      .replace(/:/g, "_");
+      .replace(/\s+/g, "-")
+      .replace(/:/g, "");
 
     const img = new Image();
     const path = `/gaming-covers/${formatted}_cover.png`;
 
-    img.onload = () => setCoverSrc(path); // ✅ FIXED
+    img.onload = () => setCoverSrc(path);
 
     img.onerror = () => {
-      const random = Math.floor(Math.random() * 3) + 1;
-      setCoverSrc(`/models/model_${random}.png`); // ✅ FIXED
+      setCoverSrc("/gaming-covers/others_cover.png");
     };
 
     img.src = path;
@@ -121,7 +121,7 @@ export default function GamingPage() {
     const has_coupon = hasCode(c);
     const cheap = isCheap(c);
 
-    // 🔥 NO LINK
+    // 🔥 NO LINK → COPY ONLY
     if (!c.link) {
       navigator.clipboard.writeText(c.code);
 
