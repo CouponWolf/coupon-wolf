@@ -195,10 +195,26 @@ body {
 }
 
 .row h2 {
-  margin-bottom: 10px;
-  color: #5A0F0F;
+  margin-bottom: 15px;
+  margin-left: 20px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #5A2A24;
+  position: relative;
+  display: inline-block;
 }
 
+/* underline accent */
+.row h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 40%;
+  height: 3px;
+  background: #C89B3C;
+  border-radius: 2px;
+}
 /* CAROUSEL (🔥 FIXED) */
 .carousel {
   overflow-x: auto;
@@ -283,24 +299,39 @@ body {
 /* CARD TEXT */
 .card-info {
   position: absolute;
-  bottom: 5px;
+  top: 8px;
   left: 10px;
   right: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 16px);
+
   transform: skewX(10deg);
-  text-align: center;
+  pointer-events: none; /* so clicks still go to card */
 }
 
-.discount {
-  display: block;
-  font-weight: bold;
-  color: #5A2A24;
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+
+  text-align: left;
+
+  /* readability boost */
+  text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+}
+
+.card-discount {
   font-size: 14px;
-}
+  font-weight: 800;
+  color: #5A2A24;
 
-.title {
-  display: block;
-  font-size: 12px;
-  color: #333;
+  text-align: right;
+
+  /* glow effect */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 /* COPY POPUP */
