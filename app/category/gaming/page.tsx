@@ -8,7 +8,7 @@ const GAMES = [
   "Wuthering Waves",
   "Zenless Zone Zero",
   "Naraka",
-  "Seven Deadly Sins",
+  "Seven Deadly Sins Origin",
   "Others"
 ];
 
