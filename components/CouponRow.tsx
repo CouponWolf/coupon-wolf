@@ -270,7 +270,7 @@ export default function CouponRow({ title, category }: any) {
                 <div className="card-info">
                   <span className="card-title">{c.title}</span>
                   <span className="card-discount">{c.discount}</span>
-                </div>>
+                </div>
 
                 {has_coupon && (
                   <div className="overlay">
