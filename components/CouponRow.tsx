@@ -153,10 +153,14 @@ export default function CouponRow({ title, category }: any) {
 
     // ✅ NO CODE
     if (!has_coupon) {
-      if (finalLink) {
-        window.open(finalLink, "_blank");
-      }
-      return;
+        await supabase.from("clicks").insert([
+          { coupon_id: coupon.id }
+        ]);
+
+        if (finalLink) {
+          window.open(finalLink, "_blank");
+        }
+        return;
     }
 
     // ✅ CHEAP
