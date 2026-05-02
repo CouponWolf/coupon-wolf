@@ -165,8 +165,12 @@ export default function SearchCoupons() {
 
     const finalLink = buildAffiliateLink(coupon.link);
 
-    // ❌ NO CODE
+    // ✅ NO CODE (FIXED)
     if (!has_coupon) {
+      await supabase.from("clicks").insert([
+        { coupon_id: coupon.id }
+      ]);
+
       if (finalLink) window.open(finalLink, "_blank");
       return;
     }
