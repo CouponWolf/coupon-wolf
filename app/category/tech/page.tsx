@@ -97,6 +97,22 @@ export default function TechPage() {
     return false;
   };
 
+  // ===== LOGO SYSTEM (FIXED) =====
+  const getDomainName = (url: string) => {
+    try {
+      return new URL(url).hostname
+        .replace("www.", "")
+        .split(".")[0]
+        .toLowerCase();
+    } catch {
+      return "fallback";
+    }
+  };
+
+  const getTitleLogo = (title: string) => {
+    return title.toLowerCase().replace(/\s+/g, "_");
+  };
+
   // ===== AD =====
   const watchAd = (id: string) => {
     if (adLoading) return;
@@ -166,11 +182,6 @@ export default function TechPage() {
     }, 700);
   };
 
-  // ===== LOGO =====
-  const getLogo = (title: string) => {
-    return title.toLowerCase().replace(/\s+/g, "_");
-  };
-
   // ===== UI =====
   return (
     <div className="clothing-page">
@@ -202,13 +213,24 @@ export default function TechPage() {
               const cheap = isCheap(c);
               const unlockedNow = unlocked[c.id];
 
+              const domainLogo = getDomainName(c.link);
+              const titleLogo = getTitleLogo(c.title);
+
               return (
                 <div key={i} className="coupon-card">
 
+                  {/* ✅ FIXED LOGO SYSTEM */}
                   <img
                     className="card-logo"
-                    src={`/logos/${getLogo(c.title)}.png`}
-                    onError={(e: any) => (e.target.src = "/fallback.png")}
+                    src={`/logos/${domainLogo}.png`}
+                    onError={(e: any) => {
+                      e.target.onerror = null;
+                      e.target.src = `/logos/${titleLogo}.png`;
+
+                      e.target.onerror = () => {
+                        e.target.src = "/fallback.png";
+                      };
+                    }}
                   />
 
                   <div className="coupon-info">
