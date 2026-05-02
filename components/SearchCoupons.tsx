@@ -268,8 +268,8 @@ export default function SearchCoupons() {
                 />
 
                 <div className="card-info">
-                  <span className="discount">{c.discount}</span>
-                  <span className="title">{c.title}</span>
+                  <span className="card-title">{c.title}</span>
+                  <span className="card-discount">{c.discount}</span>
                 </div>
 
                 {has_coupon && (
