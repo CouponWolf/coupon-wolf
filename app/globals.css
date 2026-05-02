@@ -178,7 +178,7 @@ body {
 /* ROWS */
 .rows-container {
   position: absolute;
-  top: 55%;
+  top: 52%;
   transform: translateY(-50%);
   left: 0;
   right: 0;
