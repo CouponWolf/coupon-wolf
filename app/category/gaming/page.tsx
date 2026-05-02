@@ -60,13 +60,11 @@ export default function GamingPage() {
   // ===== COVER =====
   const loadCover = (game: string) => {
 
-    // ✅ OTHERS
     if (game === "Others") {
       setCoverSrc("/gaming-covers/others_cover.png");
       return;
     }
 
-    // ✅ FORMAT WITH "-"
     const formatted = game
       .toLowerCase()
       .replace(/\s+/g, "-")
@@ -101,6 +99,7 @@ export default function GamingPage() {
     return false;
   };
 
+  // ===== AD =====
   const watchAd = (id: string) => {
     if (adLoading) return;
 
@@ -114,62 +113,58 @@ export default function GamingPage() {
     }, 2000);
   };
 
-  // ===== CLICK =====
+  // ===== CLICK (FIXED) =====
   const handleClick = async (c: any, e: any) => {
     e.stopPropagation();
 
     const has_coupon = hasCode(c);
     const cheap = isCheap(c);
-
-    // 🔥 NO LINK → COPY ONLY
-    if (!c.link) {
-      navigator.clipboard.writeText(c.code);
-
-      setPopup({ show: true, x: e.clientX, y: e.clientY });
-
-      setTimeout(() => {
-        setPopup({ show: false, x: 0, y: 0 });
-      }, 700);
-
-      return;
-    }
+    const isUnlocked = unlocked[c.id];
 
     const finalLink = c.link;
 
+    // ❌ NO CODE
     if (!has_coupon) {
-      window.open(finalLink, "_blank");
+      if (finalLink) window.open(finalLink, "_blank");
       return;
     }
 
+    // 🟢 CHEAP
     if (cheap) {
       navigator.clipboard.writeText(c.code);
 
-      await supabase.from("clicks").insert([{ coupon_id: c.id }]);
+      await supabase.from("clicks").insert([
+        { coupon_id: c.id }
+      ]);
 
       setPopup({ show: true, x: e.clientX, y: e.clientY });
 
       setTimeout(() => {
         setPopup({ show: false, x: 0, y: 0 });
-        window.open(finalLink, "_blank");
+        if (finalLink) window.open(finalLink, "_blank");
       }, 700);
 
       return;
     }
 
-    if (!unlocked[c.id]) {
+    // 🔒 PREMIUM
+    if (!isUnlocked) {
       watchAd(c.id);
       return;
     }
 
+    // ✅ AFTER UNLOCK
     navigator.clipboard.writeText(c.code);
 
-    await supabase.from("clicks").insert([{ coupon_id: c.id }]);
+    await supabase.from("clicks").insert([
+      { coupon_id: c.id }
+    ]);
 
     setPopup({ show: true, x: e.clientX, y: e.clientY });
 
     setTimeout(() => {
       setPopup({ show: false, x: 0, y: 0 });
-      window.open(finalLink, "_blank");
+      if (finalLink) window.open(finalLink, "_blank");
     }, 700);
   };
 
