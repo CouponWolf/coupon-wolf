@@ -178,7 +178,7 @@ body {
 /* ROWS */
 .rows-container {
   position: absolute;
-  top: 50%;
+  top: 55%;
   transform: translateY(-50%);
   left: 0;
   right: 0;
@@ -195,7 +195,6 @@ body {
 }
 
 .row h2 {
-  margin-top: 8px;
   margin-bottom: 15px;
   margin-left: 20px;
   font-size: 26px;
