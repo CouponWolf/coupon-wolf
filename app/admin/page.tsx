@@ -11,6 +11,7 @@ export default function AdminPage() {
   const [tab, setTab] = useState("add");
 
   const [coupons, setCoupons] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
   const [pending, setPending] = useState<any[]>([]);
   const [clicksMap, setClicksMap] = useState<Record<string, number>>({});
   const [editingCoupon, setEditingCoupon] = useState<any>(null);
@@ -47,7 +48,7 @@ export default function AdminPage() {
     fetchCoupons();
     fetchClicks();
     fetchPending();
-  }, [authorized]);
+  }, [authorized, search]);
 
   const formatDate = (date: string | null) => {
     if (!date) return "-";
@@ -55,7 +56,19 @@ export default function AdminPage() {
   };
 
   const fetchCoupons = async () => {
-    const { data } = await supabase.from("coupons").select("*");
+    let query = supabase
+      .from("coupons")
+      .select("*")
+      .order("updated_at", { ascending: false }); // 🔥 newest first
+
+    if (search.trim() !== "") {
+      query = query.or(
+        `title.ilike.%${search}%,link.ilike.%${search}%,category.ilike.%${search}%`
+      );
+    }
+
+    const { data } = await query;
+
     if (data) setCoupons(data);
   };
 
@@ -320,7 +333,15 @@ export default function AdminPage() {
       )}
 
       {tab === "manage" && (
-        <div className="admin-table">
+        <>
+          <input
+            className="admin-search"
+            placeholder="Search by title, link, or category..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <div className="admin-table">
           <div className="admin-row header">
             <span>Title</span>
             <span>Code</span>
@@ -376,6 +397,7 @@ export default function AdminPage() {
             </div>
           ))}
         </div>
+        </>
       )}
 
       {tab === "pending" && (
