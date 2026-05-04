@@ -100,6 +100,7 @@ export default function AdminPage() {
       is_active: true,
       category: null,
       page_category: null, // ✅ NEW
+      updated_at: new Date().toISOString(),
     });
 
     if (error) return alert(error.message);
@@ -142,6 +143,7 @@ export default function AdminPage() {
         link: form.link,
         affiliate_link: form.affiliate_link || null,
         expires_at: form.expires || null,
+        updated_at: new Date().toISOString(),
       })
       .eq("id", editingCoupon.id);
 
@@ -166,7 +168,10 @@ export default function AdminPage() {
   const toggleActive = async (c: any) => {
     const { error } = await supabase
       .from("coupons")
-      .update({ is_active: !c.is_active })
+      .update({
+        is_active: !c.is_active,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", c.id);
 
     if (error) return alert("Toggle failed");
@@ -190,7 +195,10 @@ export default function AdminPage() {
 
     await supabase
       .from("coupons")
-      .update({ category: categoryValue })
+      .update({
+        category: categoryValue,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id);
 
     fetchCoupons();
@@ -202,7 +210,10 @@ export default function AdminPage() {
 
     await supabase
       .from("coupons")
-      .update({ page_category: pageValue })
+      .update({
+        page_category: pageValue,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id);
 
     fetchCoupons();
