@@ -16,7 +16,7 @@ const BRANDS = [
 
 export default function BeautyPage() {
   const [activeBrand, setActiveBrand] = useState("Sephora");
-  const [coupons, setCoupons] = useState<any[]>([];
+  const [coupons, setCoupons] = useState<any[]>([]);
   const [coverSrc, setCoverSrc] = useState("");
   const [flip, setFlip] = useState(false);
 
