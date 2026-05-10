@@ -11,7 +11,7 @@ const BRANDS = [
   "Fenty Beauty",
   "Huda Beauty",
   "YesStyle",
-  "Others"
+  "Others",
 ];
 
 export default function BeautyPage() {
