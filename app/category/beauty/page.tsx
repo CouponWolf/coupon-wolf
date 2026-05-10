@@ -67,7 +67,9 @@ export default function BeautyPage() {
       return;
     }
 
-    const formatted = brand.toLowerCase();
+    const formatted = brand
+      .toLowerCase()
+      .replace(/\s+/g, "");
 
     const img = new Image();
     const path = `/beauty-covers/${formatted}_beauty.png`;
